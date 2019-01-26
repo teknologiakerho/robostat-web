@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% from "util.html" import active_path %}
+
+{% macro footer_link(href) %}
+	<a href="{{href}}"
+	   class="j-footer-link {% call active_path(href) %}j-footer-active{% endcall %}">
+	   {{ caller() }}
+	</a>
+{% endmacro %}
+
+{% block title %}
+	Tuomarointi - RoboStat
+{% endblock %}
+
+{% block css %}
+	{{ super() }}
+	{{ static_css("judging.min.css") }}
+{% endblock %}
+
+{% block body_content %}
+	<div class="j-page-container">
+
+		<div class="j-header">
+			<div class="j-header-content">
+				Olet tuomari: 
+				<strong>{{user.name}}</strong>
+				<a class="j-header-logout" href="/logout">
+					Kirjaudu ulos
+				</a>
+			</div>
+		</div>
+
+		<div class="j-page-wrapper">
+			<div class="j-page">
+				{% block body %}
+				{% endblock %}
+			</div>
+		</div>
+
+		<div class="j-footer">
+			{% call footer_link(url_for('.list', what='future')) %}
+				Tulevat
+			{% endcall %}
+			{% call footer_link(url_for('.list', what='past')) %}
+				Menneet
+			{% endcall %}
+		</div>
+	</div>
+{% endblock %}
+
+
+{#
+{% block body_content %}
+	<div style="padding-bottom: 60px">
+		{% block body %} {% endblock %}
+	</div>
+
+	{% block bottom_menu %}
+		<div class="uk-position-fixed uk-position-bottom uk-background-default
+			uk-flex-middle uk-flex-center uk-grid-divider uk-flex-nowrap" uk-grid>
+			<ul class="uk-tab uk-tab-bottom">
+				<li {% call active_path(url_for('.list', what='future')) %}
+					class="uk-active" {% endcall %}>
+					<a href="{{url_for('.list',what='future')}}">
+						Tulevat
+					</a>
+				</li>
+				<li {% call active_path(url_for('.list', what='past')) %}
+				   class="uk-active" {% endcall %}>
+					<a href="{{url_for('.list',what='past')}}">
+						Menneet
+					</a>
+				</li>
+			</ul>
+			<div class="uk-inline">
+				<button class="uk-button uk-button-text">
+					<span uk-icon="icon: user"></span>
+					<span class="uk-visible@s">{{user.name}}</span>
+				</button>
+				<div uk-dropdown="mode: click">
+					<div>
+						{{user.name}}
+						<br/>
+						<span class="uk-text-meta">Tuomari</span>
+					</div>
+					<hr/>
+					<ul class="uk-nav uk-dropdown-nav">
+						<li class="uk-nav-header">Toiminnot</li>
+						<li>
+							<a href="/logout">
+								Kirjaudu ulos
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	{% endblock %}
+{% endblock %}
+#}
+
+{# vim: set ft=htmldjango: #}

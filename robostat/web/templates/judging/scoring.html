@@ -1,0 +1,60 @@
+{% extends "judging/base.html" %}
+
+{% set event = judging.event %}
+
+{% block title %}
+	{{ event.teams|map(attribute="name")|join(" vs ") }} | Tuomarointi - RoboStat
+{% endblock %}
+
+{% block js %}
+	{{ super() }}
+	{{ static_script("lib/jquery.min.js") }}
+	{{ static_script("judging.min.js") }}
+	<script type="text/javascript">
+		judging.submit("#j-submit", {
+			postUrl: "{{url_for('.scoring', id=judging.event_id)}}",
+			returnUrl: "{{url_for('.list', what=judging.is_future and 'future' or 'past')}}"
+		});
+	</script>
+{% endblock %}
+
+{% block body %}
+
+	<table class="j-scoring-info">
+		<tr>
+			<th colspan=2>
+				Tuomarointilomake - {{ get_block(event).name }}
+			</th>
+		</tr>
+		<tr>
+			<td>Aika</td>
+			<td>{{event.ts_sched|localdate}}</td>
+		</tr>
+		<tr>
+			<td>Joukkue{% if event.teams|length > 1 %}et{% endif %}</td>
+			<td>
+				{% for t in event.teams %}
+					<strong>{{t.name}}</strong> ({{t.school}}) <br/>
+				{% endfor %}
+			</td>
+		</tr>
+	</table>
+
+	{% block judging_container %}
+		<div>
+			{% block form %}
+				<div id="j-scoring">
+				</div>
+			{% endblock %}
+
+			{% block submit %}
+				<button id="j-submit" class="j-scoring-submit">
+					Tallenna ja poistu
+				</button>
+			{% endblock %}
+		</div>
+	{% endblock %}
+
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

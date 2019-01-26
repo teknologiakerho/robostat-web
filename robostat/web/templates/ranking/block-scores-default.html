@@ -1,0 +1,30 @@
+{% macro render_card(event) %}
+	<div class="uk-flex-middle" uk-grid>
+		<span class="uk-text-meta uk-width-1-5">
+			{{event.ts_sched|localdate}}
+		</span>
+
+		<div class="uk-width-3-5">
+			{{event.teams|map(attribute="name")|join(" vs ")}}
+		</div>
+
+		<div class="uk-width-1-5">
+			{% for tp in event.teams_part|sort(attribute="team.name") %}
+				{{tp.scores|rejectattr("data", "none")
+					|sort(attribute="judge_id")
+					|map(attribute="score_obj")
+					|map("int")
+					|join(",")}}
+				{% if not loop.last %} - {% endif %}
+			{% endfor %}
+		</div>
+	</div>
+{% endmacro %}
+
+<ul class="uk-list">
+	{% for event in events %}
+		{{ render_card(event) }}
+	{% endfor %}
+</ul>
+
+{# vim: set ft=htmldjango: #}

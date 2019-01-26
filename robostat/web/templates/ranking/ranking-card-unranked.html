@@ -1,0 +1,18 @@
+{% from "util.html" import render_team_card %}
+
+<div class="uk-flex-middle" uk-grid>
+	<div class="uk-width-1-6">
+	</div>
+	<div class="uk-width-expand">
+		{% block team %}
+			{{render_team_card(team)}}
+		{% endblock %}
+	</div>
+	{% block right %}
+		<span class="uk-text-muted">
+			(Ei vielä sijoitusta)
+		</span>
+	{% endblock %}
+</div>
+
+{# vim: set ft=htmldjango: #}

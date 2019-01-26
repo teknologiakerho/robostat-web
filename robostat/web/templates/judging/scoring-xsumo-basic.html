@@ -1,0 +1,10 @@
+{% extends "judging/scoring.html" %}
+
+{% block js %}
+	{{ super() }}
+	<script type="text/javascript">
+		judging.xsumoBasic("#j-scoring", {{event_data|tojson}});
+	</script>
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

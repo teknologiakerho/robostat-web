@@ -1,0 +1,21 @@
+{% extends "judging/base.html" %}
+
+{% block body %}
+	{% for day, js in judgings|sort(attribute="event.ts_sched")|groupby("event.day_sched") %}
+		<div class="j-list-day">
+			{{day|localdate("%-d.%-m.%Y")}}
+		</div>
+
+		<div class="j-list-cards">
+			{% for j in js %}
+				<a class="j-list-card" href="{{url_for('.scoring', id=j.event_id)}}">
+					{{ render_event_card(j)|safe }}
+				</a>
+			{% endfor %}
+		</div>
+	{% else %}
+		<p>Ei tuomaroitavaa.</p>
+	{% endfor %}
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

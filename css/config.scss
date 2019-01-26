@@ -1,0 +1,16 @@
+/** global */
+$link-color: #ffa256;
+$text-color: #666;
+$text-color-light: lighten($text-color, 30%);
+$text-color-dark: darken($text-color, 30%);
+$divider-color: #e5e5e5;
+$background: #fff;
+$stripe-background: #f5f5f5;
+$dark-background: #424242;
+$dark-foreground: #fafafa;
+$danger-color: #F44336;
+
+/** xsumo */
+$xsumo-color-p1: #F44336;
+$xsumo-color-mid: #CDDC39;
+$xsumo-color-p2: #03A9F4;

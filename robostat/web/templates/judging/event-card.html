@@ -1,0 +1,38 @@
+{% set event = judging.event %}
+
+{# TODO: tää näyttää huonolta pienillä näytöllä,
+	tohon vois tunkee jonku @media jutun pienille näytöille #}
+
+<div class="j-event-card">
+
+	<div class="j-event-card-ts">
+		{{event.ts_sched|localdate("%H:%M")}}
+	</div>
+
+	<div class="j-event-card-meta">
+		<div class="j-event-card-place">
+			{% block meta %}
+				{{event.arena}}
+			{% endblock %}
+		</div>
+		{% if not judging.is_future %}
+			<div class="j-event-card-score">
+				{% block score %}
+				{% endblock %}
+			</div>
+		{% endif %}
+	</div>
+
+	<div class="j-event-card-main">
+		<div class="j-event-card-title">
+			{% block title %}
+			{% endblock %}
+		</div>
+		<div class="j-event-card-data">
+			{{ get_block(event).name }}
+		</div>
+	</div>
+
+</div>
+
+{# vim: set ft=htmldjango: #}

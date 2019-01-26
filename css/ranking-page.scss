@@ -1,0 +1,89 @@
+.r-page-container {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	box-sizing: border-box;
+}
+
+.r-page-header {
+	margin-bottom: 20px;
+}
+
+.r-page-header-title {
+	background: $dark-background;
+	color: $dark-foreground;
+	padding: 4px;
+	text-align: center;
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+.r-page-header-options {
+	text-align: right;
+	font-size: 0.9em;
+	padding: 4px 0;
+	border-bottom: 1px solid $divider-color;
+}
+
+.r-page-content {
+	//border-width: 0 1px;
+	//border-style: solid;
+	//border-color: darken($divider-color, 10%);
+	padding: 0 10px;
+	flex: 1;
+}
+
+.r-rank-card {
+	display: flex;
+	align-items: center;
+
+	border-bottom: 1px solid $divider-color;
+}
+
+.r-rank-card:not(.r-rank-card-leader):nth-child(2n) {
+	background: $stripe-background;
+}
+
+.r-rank-card-leader {
+	flex-wrap: wrap;
+}
+
+.r-rank-card-rank {
+	font-weight: bold;
+	font-size: 1.1em;
+
+	padding: 0 10px;
+}
+
+.r-rank-card-leader > .r-rank-card-rank {
+	font-weight: normal;
+	font-size: 3em;
+}
+
+.r-rank-card-team-info {
+	flex: 1;
+	white-space: nowrap;
+	overflow: hidden;
+	line-height: 1.2;
+}
+
+.r-rank-card-leader > .r-rank-card-team-info {
+	flex: initial;
+	padding: 0 20px;
+	line-height: 1.5;
+}
+
+//.r-rank-card-name {
+//	color: $text-color-dark;
+//}
+
+.r-rank-card-school {
+	font-style: italic;
+	font-size: 0.8em;
+	color: $text-color-light;
+}
+
+.r-rank-card-name, .r-rank-card-school {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

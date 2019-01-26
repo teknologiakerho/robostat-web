@@ -1,0 +1,19 @@
+{% extends "ranking/base.html" %}
+
+{% block body %}
+	<div class="container r-page-container">
+		<div class="r-page-header">
+			{% block header %}
+				<div class="r-page-header-title">
+					{{name}}
+				</div>
+			{% endblock %}
+		</div>
+		<div class="r-page-content">
+			{% block content %}
+			{% endblock %}
+		</div>
+	</div>
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

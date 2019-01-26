@@ -1,0 +1,61 @@
+$banner-color: #f9f9f9;
+
+.j-page-container {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+}
+
+.j-header {
+	border-bottom: 1px solid $divider-color;
+	padding: 4px 2px;
+}
+
+.j-header, .j-footer {
+	font-size: 0.9em;
+	background: $banner-color;
+	box-shadow: 0 0 2px $divider-color;
+}
+
+.j-header-content {
+	max-width: 1200px;
+	padding: 0 20px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.j-header-logout {
+	float: right;
+}
+
+.j-page-wrapper {
+	flex: 1;
+	overflow: auto;
+}
+
+.j-page {
+	max-width: 1000px;
+	padding: 0 4px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.j-footer {
+	border-top: 1px solid $divider-color;
+	text-align: center;
+	line-height: 1;
+}
+
+.j-footer-link, .j-footer-link:visited {
+	color: lighten($text-color, 20%);
+	font-size: 1.1em;
+	text-transform: uppercase;
+	padding: 8px 20px;
+	display: inline-block;
+}
+
+.j-footer-active {
+	background: darken($banner-color, 10%);
+	color: $text-color-dark !important;
+	border-top: 2px solid $link-color;
+}

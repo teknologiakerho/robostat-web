@@ -1,0 +1,18 @@
+{% extends "ranking/details.html" %}
+
+{% block content %}
+	<div id="r-matrix">
+	</div>
+{% endblock %}
+
+{% block js %}
+	{{ super() }}
+	<script type="text/javascript">
+		ranking.xsumoMatrix("#r-matrix",
+			{{team_data|tojson}},
+			{{event_data|tojson}}
+		);
+	</script>
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

@@ -1,0 +1,20 @@
+{% macro static_css(file) %}
+	<link rel="stylesheet" href="{{url_for('robostat.static', filename=file)}}" />
+{% endmacro %}
+
+{% macro static_script(file) %}
+	<script src="{{url_for('robostat.static', filename=file)}}">
+	</script>
+{% endmacro %}
+
+{% macro active_path(path) %}
+	{% if request.path.startswith(path) %}
+		{{ caller() }}
+	{% endif %}
+{% endmacro %}
+
+{% macro render_team_card(team) %}
+	{{team|team_card|safe}}
+{% endmacro %}
+
+{# vim: set ft=htmldjango: #}

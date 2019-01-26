@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% macro event_desc(event) %}
+	{{event.teams|map(attribute="name")|join(" - ")}}
+{% endmacro %}
+
+{% block css %}
+	{{ super() }}
+	{{ static_css("timetable.min.css") }}
+{% endblock %}
+
+{% block body_content %}
+	<div class="container">
+		<table class="t-timetable">
+			{% for day, day_events in event_data
+				|sort(attribute="0.ts_sched")
+				|groupby("0.day_sched") %}
+				<tr>
+					<th colspan=5>
+						{{day|localdate("%-d.%-m.%Y")}}
+					</th>
+				</tr>
+				{% for event, is_future in day_events %}
+					<tr class="t-timetable-row">
+						<td>{{event.ts_sched|localdate("%H:%M")}}</td>
+						<td>{{event_desc(event)}}</td>
+						<td>{{get_block(event).name}}</td>
+						<td>K{{event.arena}}</td>
+					</tr>
+				{% endfor %}
+			{% endfor %}
+		</table>
+	</div>
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

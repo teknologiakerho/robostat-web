@@ -1,0 +1,71 @@
+.j-list-day {
+	text-align: center;
+	font-weight: bold;
+	margin-top: 20px;
+	padding: 2px;
+	background: $dark-background;
+	color: $dark-foreground;
+}
+
+.j-list-cards {
+	border: 1px solid $divider-color;
+}
+
+.j-list-cards > *:nth-child(2n){
+	background: $stripe-background;
+}
+
+.j-list-cards > *:not(:last-child) {
+	border-bottom: 1px solid $divider-color;
+}
+
+.j-list-card {
+	display: block;
+}
+
+.j-event-card {
+	position: relative;
+}
+
+.j-event-card-ts {
+	position: absolute;
+	left: 4px;
+	top: 50%;
+	transform: translate(0, -50%);
+	color: $text-color-light;
+	font-size: 2em;
+}
+
+.j-event-card-meta {
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	text-align: right;
+}
+
+.j-event-card-place {
+	//color: $text-color-light;
+	color: $text-color;
+	font-size: 0.8em;
+	font-style: italic;
+}
+
+.j-event-card-score {
+	font-weight: bold;
+	font-size: 0.8em;
+	color: $text-color;
+}
+
+.j-event-card-main {
+	text-align: center;
+	padding: 20px 0;
+}
+
+.j-event-card-title {
+	color: $text-color-dark;
+}
+
+.j-event-card-data {
+	font-size: 0.9em;
+	color: $text-color;
+}

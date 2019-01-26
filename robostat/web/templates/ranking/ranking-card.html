@@ -1,0 +1,24 @@
+{% from "util.html" import render_team_card %}
+
+<div class="r-rank-card {% if rank == 1 %}r-rank-card-leader{% endif %}">
+
+	<div class="r-rank-card-rank">
+		#{{rank}}
+	</div>
+
+	{# TODO logo? #}
+	<div class="r-rank-card-team-info">
+		<div class="r-rank-card-name">
+			{{team.name}}
+		</div>
+		<div class="r-rank-card-school">
+			{{team.school}}
+		</div>
+	</div>
+
+	{% block score %}
+	{% endblock %}
+
+</div>
+
+{# vim: set ft=htmldjango: #}

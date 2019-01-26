@@ -1,0 +1,21 @@
+{% extends "ranking/ranking-page.html" %}
+
+{% block header %}
+	{{ super() }}
+	{% if has_details %}
+		<div class="r-page-header-options">
+			[Tulokset] 
+			<a href="{{url_for('.details', id=id)}}">
+				[Tiedot]
+			</a>
+		</div>
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+	{% for rank, (team, score) in ranking|enumerate_ranking %}
+		{{ render_card(rank, team, score)|safe }}
+	{% endfor %}
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+	Tulokset - RoboStat
+{% endblock %}
+
+{% block css %}
+	{{ super() }}
+	{{ static_css("ranking.min.css") }}
+{% endblock %}
+
+{% block js %}
+	{{ super() }}
+	{{ static_script("lib/jquery.min.js") }}
+	{{ static_script("ranking.min.js") }}
+{% endblock %}
+
+{% block body_content %}
+	{% block body %}
+	{% endblock %}
+{% endblock %}
+
+
+{# vim: set ft=htmldjango: #}

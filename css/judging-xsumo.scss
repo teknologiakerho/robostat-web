@@ -1,0 +1,169 @@
+$color-not-chosen: transparent;
+
+$color-round-error: #F44336;
+$color-round-add: #388E3C;
+
+$text-color-inactive: #aaaaaa;
+$text-color-active: #ffffff;
+
+$radio-size: 60px;
+
+%inline-center {
+	pointer-events: none;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.j-xsumo {
+	margin-top: 20px;
+}
+
+.j-xsumo-p1 {
+	display: inline-block;
+	float: left;
+}
+
+.j-xsumo-p1::before {
+	display: inline-block;
+	width: 0.75em;
+	height: 0.75em;
+	margin-right: 0.5em;
+	content: "";
+	background: $xsumo-color-p1;
+}
+
+.j-xsumo-p2 {
+	display: inline-block;
+	float: right;
+}
+
+.j-xsumo-p2::after {
+	display: inline-block;
+	width: 0.75em;
+	height: 0.75em;
+	margin-left: 0.5em;
+	content: "";
+	background: $xsumo-color-p2;
+}
+
+.j-xsumo-p1, .j-xsumo-p2 {
+	font-size: 1.1em;
+}
+
+.j-xsumo-rounds {
+	clear: both;
+}
+
+.j-xsumo-round-add {
+	display: block;
+	background: $color-round-add;
+	color: #fff;
+	border: none;
+	padding: 30px;
+	cursor: pointer;
+	position: relative;
+	border-radius: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	font-size: 60px;
+	margin-top: 20px;
+}
+
+.j-xsumo-round-add > * {
+	@extend %inline-center;
+}
+
+.j-xsumo-round {
+	border: 1px solid #ddd;
+	margin-bottom: -1px;
+	padding-bottom: 8px;
+}
+
+.j-xsumo-round-header {
+	position: relative;
+	text-align: center;
+	background: #f9f9f9;
+	border-bottom: 1px solid $divider-color;
+	margin-bottom: 8px;
+}
+
+.j-xsumo-round-title {
+	font-weight: bold;
+}
+
+.j-xsumo-round-close {
+	position: absolute;
+	right: 2px;
+	top: 2px;
+	color: $danger-color;
+	font-size: 0.9em;
+	border: none;
+	background: none;
+	cursor: pointer;
+}
+
+.j-xsumo-round-error {
+	border: 4px solid $color-round-error !important;
+}
+
+.j-xsumo-pseudoround > * {
+	display: inline-block;
+}
+
+.j-xsumo-input-container {
+	//padding: 4px;
+	padding: 16px;
+	display: inline-block;
+	width: 33.33333333%;
+	position: relative;
+	line-height: 1;
+	box-sizing: border-box;
+}
+
+.j-xsumo-input {
+	height: $radio-size;
+	background-size: $radio-size;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #aaa !important;
+	width: 100%;
+}
+
+.j-xsumo-input:not(:disabled) {
+	cursor: pointer;
+}
+
+.j-xsumo-input:disabled {
+	background: repeating-linear-gradient(
+		45deg,
+		#eee,
+		#eee 10px,
+		transparent 10px,
+		transparent 20px
+	);
+}
+
+.j-xsumo-input + span {
+	@extend %inline-center;
+	color: $text-color-inactive;
+	text-transform: uppercase;
+	//font-weight: bold;
+}
+
+.j-xsumo-input:checked + span {
+	color: $text-color-active;
+}
+
+.j-xsumo-left:checked {
+	background-color: $xsumo-color-p1 !important;
+}
+
+.j-xsumo-mid:checked {
+	background-color: $xsumo-color-mid !important;
+}
+
+.j-xsumo-right:checked {
+	background-color: $xsumo-color-p2 !important;
+}

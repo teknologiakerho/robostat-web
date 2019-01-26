@@ -1,0 +1,17 @@
+{% extends "ranking/ranking-page.html" %}
+
+{% block header %}
+	{{ super() }}
+	<div class="r-page-header-options">
+		<a href="{{url_for('.ranking', id=id)}}">
+			[Tulokset] 
+		</a>
+		[Tiedot]
+	</div>
+{% endblock %}
+
+{% block content %}
+	contenttia
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

@@ -1,0 +1,215 @@
+$color-win: #7CB342; //#CDDC39;
+$color-lose: #F44336;
+$color-tie: #F9A825;//#FFEB3B;
+$color-future: #999999;
+
+$matrix-cell-size: 40px;
+$matrix-header-size: 100px;
+$matrix-divider-color: #e5e5e5;
+$matrix-divider-width: 1px;
+
+/** ranking-card */
+
+.r-xsumo-rank-score {
+	font-weight: bold;
+}
+
+.r-rank-card-leader > .r-xsumo-rank-score {
+	font-weight: normal;
+	font-size: 1.5em;
+	padding: 0 20px;
+}
+
+.r-xsumo-rank-details-table {
+	border-spacing: 10px 0;
+	border-collapse: separate;
+}
+
+.r-xsumo-rank-details-table tr:first-child td {
+	font-size: 0.7em;
+	font-weight: bold;
+	text-transform: uppercase;
+	border-width: 0 0 2px 0;
+	border-style: solid;
+}
+
+.r-xsumo-rank-details-table td {
+	padding: 0 5px 0 0;
+}
+
+.r-xsumo-rank-details-compact {
+	font-size: 0.8em;
+	text-align: right;
+	padding-left: 10px;
+}
+
+.r-xsumo-bar {
+	display: inline-block;
+	font-size: 0;
+	width: 100px;
+	height: 6px;
+}
+
+.r-xsumo-bar-part {
+	display: inline-block;
+	height: 100%;
+}
+
+@each $name, $color in win $color-win, lose $color-lose, tie $color-tie, future $color-future {
+	/* css variablet kävis tähän hyvin */
+	.r-xsumo-#{$name} {
+		background: $color;
+	}
+	.r-xsumo-text-#{$name} {
+		color: $color;
+	}
+	.r-xsumo-border-#{$name} {
+		border-color: $color;
+	}
+}
+
+/** matrix */
+
+.r-xsumo-matrix {
+	display: flex;
+	flex-direction: column;
+
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+}
+
+.r-xsumo-matrix-top {
+	height: $matrix-header-size;
+	display: flex;
+	border-bottom: $matrix-divider-width solid $matrix-divider-color;
+}
+
+.r-xsumo-matrix-top > * {
+	flex-shrink: 0;
+}
+
+.r-xsumo-matrix-bottom {
+	flex: auto;
+	display: flex;
+	height: 1px;
+	overflow: hidden;
+}
+
+.r-xsumo-matrix-colfirst {
+	width: $matrix-header-size;
+	padding-top: 100px;
+	margin-top: -100px;
+	transform-origin: bottom right;
+	transform: rotate(45deg);
+	background: #fff;
+	z-index: 1;
+	border-right: $matrix-divider-width solid $matrix-divider-color;
+}
+
+.r-xsumo-matrix-colheader {
+	display: flex;
+	overflow: hidden;
+	align-items: flex-end;
+	width: 1px;
+	flex: 1;
+}
+
+.r-xsumo-matrix-colname {
+	width: $matrix-cell-size;
+	box-sizing: border-box;
+	color: $xsumo-color-p2;
+}
+
+.r-xsumo-matrix-colname > * {
+	transform-origin: bottom left;
+	transform: translate($matrix-cell-size, 2px) rotate(-45deg);
+	border-bottom: $matrix-divider-width solid $matrix-divider-color;
+	white-space: nowrap;
+	overflow: hidden;
+	width: 1.4142 * $matrix-header-size;
+	text-overflow: ellipsis;
+}
+
+.r-xsumo-matrix-rowheader {
+	// XXX ei mitään hajuakaan miks mutta tää tulee aina 1px tablea ylemmäks
+	margin-top: 1px;
+
+	width: $matrix-header-size;
+	white-space: nowrap;
+	line-height: $matrix-cell-size;
+	text-align: center;
+	overflow: hidden;
+	border-right: $matrix-divider-width solid $matrix-divider-color;
+
+	// XXX: tää on viritys scrollbarien padding korjaamiseen
+	padding-bottom: 1000px;
+}
+
+.r-xsumo-matrix-rowname {
+	height: $matrix-cell-size;
+	border-bottom: $matrix-divider-width solid $matrix-divider-color;
+	box-sizing: border-box;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: $xsumo-color-p1;
+}
+
+.r-xsumo-matrix-colname, .r-xsumo-matrix-rowname {
+	font-weight: bold;
+	font-size: 90%;
+}
+
+.r-xsumo-matrix-grid {
+	flex: auto;
+	width: 1px;
+	overflow: auto;
+}
+
+.r-xsumo-matrix-table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	table-layout: fixed;
+	width: 100%;
+	font-size: 80%;
+}
+
+.r-xsumo-matrix-table tr {
+	height: $matrix-cell-size;
+}
+
+.r-xsumo-matrix-table td {
+	width: $matrix-cell-size;
+	height: $matrix-cell-size;
+	border-width: 0 $matrix-divider-width $matrix-divider-width 0;
+	border-color: $matrix-divider-color;
+	border-style: solid;
+	margin: 0;
+	padding: 0;
+	white-space: nowrap;
+	overflow: hidden;
+	box-sizing: border-box;
+	text-align: center;
+}
+
+.r-xsumo-matrix-skip {
+	background: #eee;
+}
+
+/*
+.r-xsumo-matrix-event-s1 {
+	color: darken($color-p1, 15%);
+}
+
+.r-xsumo-matrix-event-s2 {
+	color: darken($color-p2, 15%);
+}
+*/
+
+//[class^="r-xsumo-matrix-"] {
+//	box-sizing: border-box;
+//	border: 1px solid red;
+//}
+
+//.r-xsumo-matrix-rotate > * {
+//}

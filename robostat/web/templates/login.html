@@ -1,0 +1,33 @@
+{% from "util.html" import static_css, static_script %}
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Tunnistautuminen - RoboStat</title>
+		<meta charset="utf-8" />
+		{{ static_css("lib/uikit.min.css") }}
+	</head>
+
+	<body>
+		<div class="uk-position-center">
+			<h3>Sinun on tunnistauduttava</h3>
+
+			{% if error %}
+				<div class="uk-alert-danger" uk-alert>
+					<p>Virhe: {{error}}</p>
+				</div>
+			{% endif %}
+
+			<form method="POST">
+				<input type="text" placeholder="Kirjautumisavain" name="key"
+					class="uk-input" autofocus />
+				<input type="submit" value="Kirjaudu"
+					class="uk-button uk-button-primary uk-margin uk-width-1-1" />
+			</form>
+		</div>
+
+		{{ static_script("lib/uikit.min.js") }}
+	</body>
+</html>
+
+{# vim: set ft=htmldjango: #}

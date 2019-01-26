@@ -1,0 +1,49 @@
+{% if score.played == 0 %}
+	{% extends "ranking/ranking-card-unranked.html" %}
+{% else %}
+	{% extends "ranking/ranking-card.html" %}
+{% endif %}
+
+{% macro bar(w, l, t, f) %}
+	{% set total = w+l+t+f %}
+	{% set cs = [(w, "win"), (t, "tie"), (l, "lose"), (f, "future")] %}
+	<div class="r-xsumo-bar">
+		{% for v, c in cs if v>0 %}
+			<div class="r-xsumo-bar-part r-xsumo-{{c}}" style="width:{{(100*v/total)}}%">
+			</div>
+		{% endfor %}
+	</div>
+{% endmacro %}
+
+{% block score %}
+	<div class="r-xsumo-rank-score">
+		{{score.score}}p
+	</div>
+	{% if rank == 1 %}
+		<table class="r-xsumo-rank-details-table">
+			<tr>
+				<td class="r-xsumo-border-win">Voitot</td>
+				<td class="r-xsumo-border-tie">Tasapelit</td>
+				<td class="r-xsumo-border-lose">Häviöt</td>
+				<td class="r-xsumo-border-future">Pelaamatta</td>
+			</tr>
+			<tr>
+				<td>{{score.wins}}</td>
+				<td>{{score.ties}}</td>
+				<td>{{score.losses}}</td>
+				<td>{{score.unplayed}}</td>
+			</tr>
+		</table>
+	{% else %}
+		<div class="r-xsumo-rank-details-compact">
+			{{ bar(score.wins, score.losses, score.ties, score.unplayed) }}
+			<br/>
+			<span class="r-xsumo-text-win">{{score.wins}}</span> /
+			<span class="r-xsumo-text-tie">{{score.ties}}</span> /
+			<span class="r-xsumo-text-lose">{{score.losses}}</span> /
+			<span class="r-xsumo-text-future">{{score.unplayed}}</span>
+		</div>
+	{% endif %}
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}
