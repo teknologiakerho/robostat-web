@@ -1,0 +1,11 @@
+{% extends "judging/event-card.html" %}
+
+{% block title %}
+	{{judging.score.team.name}}
+{% endblock %}
+
+{% block score %}
+	Tuomaroitu<br/>{{judging.score.score_obj}}
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

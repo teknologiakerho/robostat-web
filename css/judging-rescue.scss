@@ -1,0 +1,128 @@
+$scorebox-colors: success1 $res-color-success1,
+	success2 $res-color-success2,
+	fail $res-color-fail;
+
+.j-res {
+	margin-top: 20px;
+}
+
+.j-res-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.j-res-table td {
+	border: 1px solid $divider-color;
+}
+
+.j-res-table tr:not(.j-res-head,.j-res-section-head):nth-child(2n) {
+	background: $stripe-background;
+}
+
+.j-res-head {
+	background: #f9f9f9;
+	border: 1px solid $divider-color;
+}
+
+.j-res-head > th {
+	font-size: 0.9em;
+	text-align: left;
+}
+
+.j-res-section-head > th {
+	text-align: left;
+	padding-top: 20px;
+}
+
+.j-res-total {
+	text-align: center;
+	vertical-align: middle;
+	height: 60px;
+	font-size: 1.2em;
+	background: #fff;
+}
+
+.j-res-desc {
+	width: 100%;
+	padding-left: 4px;
+	font-size: 0.95em;
+}
+
+.j-res-input {
+	width: 60px;
+	height: 60px;
+	background: #fff;
+}
+
+.j-res-radio-container {
+	position: relative;
+}
+
+.j-res-radio {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	transition: 0.15s all;
+	display: block;
+}
+
+.j-res-radio + span {
+	@extend %inline-center;
+	color: $text-color-light;
+}
+
+.j-res-radio:checked {
+	outline: none;
+}
+
+.j-res-radio:checked + span {
+	font-size: 1.4em;
+	font-weight: bold;
+}
+
+.j-res-scorebox {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	user-select: none;
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+.j-res-scorebox-inactive {
+	color: $text-color-light !important;
+	font-weight: normal !important;
+	font-size: 0.8em !important;
+}
+
+@each $name, $color in $scorebox-colors {
+	.j-res-scorebox-#{$name} {
+		color: $color;
+	}
+
+	.j-res-scorebox-#{$name}-flash {
+		animation: j-res-scorebox-#{$name}-anim 0.3s;
+	}
+
+	.j-res-scorebox-remove-flash {
+		animation: j-res-scorebox-remove-anim 0.3s;
+	}
+
+	@keyframes j-res-scorebox-#{$name}-anim {
+		from { background: lighten($color, 10%); }
+		to { background: transparent; }
+	}
+
+	@keyframes j-res-scorebox-remove-anim {
+		from { background: #333; }
+		to { background: transparent; }
+	}
+
+	.j-res-radio-#{$name}:checked {
+		background: lighten($color, 35%);
+	}
+
+	.j-res-radio-#{$name}:checked + span {
+		color: darken($color, 15%);
+	}
+}

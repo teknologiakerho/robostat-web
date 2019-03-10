@@ -7,7 +7,7 @@ NODEMON = nodemon
 #SASS_ARGS = -t compact
 SASS_ARGS = -t compressed
 ROLLUP_ARGS =
-BUBLE_ARGS = -y dangerousForOf
+BUBLE_ARGS = -y dangerousForOf --objectAssign Object.assign
 UGLIFYJS_ARGS = -c -m
 
 STATIC = robostat/web/static

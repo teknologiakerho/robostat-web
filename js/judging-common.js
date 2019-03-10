@@ -34,6 +34,14 @@ export function submit(root, opt){
 	});
 }
 
+export function setError($input, opt){
+	opt = opt||{};
+	const clazz = opt.errorClass || "j-error";
+	const event = opt.event || "click";
+
+	$input.addClass(clazz).one(event, () => $input.removeClass(clazz));
+}
+
 export class Judging {
 
 	constructor($elem, opt){

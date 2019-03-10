@@ -1,0 +1,182 @@
+{% extends "judging/scoring.html" %}
+
+{% macro sr_1(name, desc) %}
+	{{ sr_1w(name, desc, weights[name]) }}
+{% endmacro %}
+
+{% macro sr_1w(name, desc, weight) %}
+	<tr class="j-res-sr">
+		<td class="j-res-desc">
+			{{desc|safe}}
+		</td>
+		<td>
+			<div class="j-res-radio-container">
+				<input class="j-res-input j-res-radio j-res-scorebox-success1 j-res-radio-success1"
+					   type="radio"
+					   value="success1"
+					   name="{{name}}"
+					   data-res-weight={{weight}}
+					   />
+				<span>
+					{{weight|nfmt}}
+				</div>
+			</div>
+		</td>
+		<td>
+			<div class="j-res-radio-container">
+				<input class="j-res-input j-res-radio j-res-scorebox-success2 j-res-radio-success2"
+					   type="radio"
+					   value="success2"
+					   name="{{name}}"
+					   data-res-weight={{weight/2}}
+					   />
+				<span>
+					{{(weight/2)|nfmt}}
+				</span>
+			</div>
+		</td>
+		<td>
+			<div class="j-res-radio-container">
+				<input class="j-res-input j-res-radio j-res-scorebox-fail j-res-radio-fail"
+					   type="radio"
+					   value="fail"
+					   name="{{name}}"
+					   data-res-weight=0
+					   checked
+					   />
+				<span>0</span>
+			</div>
+		</td>
+	</tr>
+{% endmacro %}
+
+{% macro sr_x(name, desc) %}
+	{{ sr_xw(name, desc, weights[name]) }}
+{% endmacro %}
+
+{% macro sr_xw(name, desc, weight) %}
+	<tr class="j-res-sr">
+		<td class="j-res-desc">
+			{{desc|safe}}
+		</td>
+		<td>
+			<div class="j-res-input"
+				 data-res-scorebox="{{name}}"
+				 data-res-value="success1"
+				 data-res-weight={{weight}}>
+			</div>
+		</td>
+		<td>
+			<div class="j-res-input"
+				 data-res-scorebox="{{name}}"
+				 data-res-value="success2"
+				 data-res-weight={{weight/2}}>
+			</div>
+		</td>
+		<td>
+			<div class="j-res-input"
+				 data-res-scorebox="{{name}}"
+				 data-res-value="fail"
+				 data-res-weight=0>
+			</div>
+		</td>
+	</tr>
+{% endmacro %}
+
+{% block form %}
+	<div class="j-res" id="j-scoring">
+		{% block scoring_table %}
+
+			<table class="j-res-table">
+
+				<tr class="j-res-head">
+					<th>Haaste</th>
+					<th colspan=999>Annetut pisteet</th>
+				</tr>
+
+				<tbody data-res-section="viiva">
+					{% block scoring_viiva %}
+						<tr class="j-res-section-head">
+							<th colspan=999>
+								1. Viivapalat
+							</th>
+						</tr>
+					{% endblock %}
+				</tbody>
+
+				{% block total_viiva %}
+					<tr>
+						<td class="j-res-desc"><strong>Yhteensä viivasta</strong></td>
+						<td colspan=999 class="j-res-total" data-res-total="viiva">
+							0
+						</td>
+					</tr>
+				{% endblock %}
+
+				<tbody data-res-section="uhri">
+					{% block scoring_uhri %}
+						<tr class="j-res-section-head">
+							<th colspan=999>
+								2. Uhrinpelastusalue
+							</th>
+						</tr>
+					{% endblock %}
+				</tbody>
+
+				{% block total_uhri %}
+					<tr>
+						<td class="j-res-desc"><strong>Yhteensä uhrinpelastuksesta</strong></td>
+						<td colspan=999 class="j-res-total" data-res-total="uhri">
+							0
+						</td>
+					</tr>
+				{% endblock %}
+
+				{% block total %}
+					<tr class="j-res-section-head">
+						<th colspan=999>
+							3. Yhteenveto
+						</th>
+					</tr>
+
+					<tr>
+						<td class="j-res-desc">
+							<strong>Pisteet</strong>
+						</td>
+						<td colspan=999 class="j-res-total">
+							<span data-res-total="viiva">0</span>
+							+
+							<span data-res-total="uhri">0</span>
+							=
+							<span data-res-total="total">0</span>
+						</td>
+					</tr>
+
+					<tr>
+						<td class="j-res-desc">
+							Aika
+						</td>
+
+						<td colspan=999 class="j-res-total">
+							<input type="text" name="time_min" size=2 /> m
+							<input type="text" name="time_sec" size=2 /> s
+						</td>
+					</tr>
+				{% endblock %}
+
+			</table>
+
+		{% endblock %}
+	</div>
+{% endblock %}
+
+{% block js %}
+	{{ super() }}
+	<script type="text/javascript">
+		judging.rescue("#j-scoring", {
+			eventData: {{event_data|tojson}}
+		});
+	</script>
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

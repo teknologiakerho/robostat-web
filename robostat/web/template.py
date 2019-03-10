@@ -21,3 +21,10 @@ def team_card(team):
 @res.app_template_filter()
 def localdate(x, fmt="%-d.%-m.%Y %H:%M"):
     return datetime.fromtimestamp(x).astimezone(tz=None).strftime(fmt)
+
+@res.app_template_filter()
+def nfmt(num):
+    if abs(num - int(num)) < 1e-15:
+        return "%d" % num
+
+    return str(num)

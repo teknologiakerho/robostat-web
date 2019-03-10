@@ -1,10 +1,7 @@
 @import "config.scss";
+@import "judging-common.scss";
 @import "judging-page.scss";
 @import "judging-list.scss";
 @import "judging-scoring.scss";
 @import "judging-xsumo.scss";
-
-@keyframes paska {
-	0% { transform: rotate(0deg); }
-	100% { transform: rotate(360deg); }
-}
+@import "judging-rescue.scss";

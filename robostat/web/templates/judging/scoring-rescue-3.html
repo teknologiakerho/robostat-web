@@ -1,0 +1,26 @@
+{% extends "judging/scoring-rescue.html" %}
+
+{% block scoring_viiva %}
+	{{ super() }}
+	{{ sr_x("viiva_palat",      "Pienet irtonaiset lego-palat") }}
+	{{ sr_x("viiva_kippi",      "Kippilauta") }}
+	{{ sr_x("viiva_maki",       "Mäki (3 palaa)") }}
+	{{ sr_x("viiva_kulma",      "90 asteen kulma") }}
+	{{ sr_x("viiva_hidasteet",  "Kiinnitetyt lego-hidasteet") }}
+	{{ sr_x("viiva_risteys",    "Risteys vasen/oikea") }}
+	{{ sr_x("viiva_katkos",     "Katkoksen selvitys") }}
+	{{ sr_x("viiva_este",       "Esteen kierto") }}
+	{{ sr_1("viiva_punainen",   "Viivanseuraus punaiselle teipille") }}
+{% endblock %}
+
+{% block scoring_uhri %}
+	{{ super() }}
+	{{ sr_1("uhri_alue",        "Onnistunut sisäänpääsy uhrinpelastusalueelle") }}
+	{{ sr_1("uhri_tunnistus",   "Uhrin tunnistus") }}
+	{{ sr_1("uhri_nosto",       "Uhrin nosto ilmaan") }}
+	{{ sr_1("uhri_koroke",      "Pelastuskorokkeen löytäminen") }}
+	{{ sr_1("uhri_pelastus",    "Uhrin pelastaminen korokkeelle<br/><i>(20p jos uhri jäi pystyyn, 10p kaatumisesta)</i>") }}
+	{{ sr_1("uhri_peruutus",    "Peruutus takaisin alueelle") }}
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

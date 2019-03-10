@@ -1,0 +1,13 @@
+$color-error: #F44336;
+
+%inline-center {
+	pointer-events: none;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.j-error {
+	border: 4px solid $color-error !important;
+}

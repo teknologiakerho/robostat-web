@@ -3,6 +3,7 @@ import flask
 import random # testi
 from robostat.util import udict
 from robostat.rulesets.xsumo import XSumoRank, XSumoScoreRank, XSumoWinsRank
+from robostat.rulesets.rescue import RescueRank
 from robostat.web.views.ranking import card_renderer
 
 # XXX pitäskö field_injectoriin laittaa set_default()?
@@ -72,4 +73,12 @@ def render_xsumo_matrix(events, **kwargs):
             team_data=team_data,
             event_data=event_data,
             **kwargs
+    )
+
+@card_renderer.of(RescueRank)
+def render_rescue_card(rank, team, score):
+    return flask.render_template("ranking/ranking-card-rescue.html",
+            rank=rank,
+            team=team,
+            score=score
     )

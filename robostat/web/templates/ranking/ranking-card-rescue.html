@@ -1,0 +1,32 @@
+{% set num_played = score.played_scores|length %}
+{% set num_total = score.all|length %}
+
+{% if num_played == 0 %}
+	{% extends "ranking/ranking-card-unranked.html" %}
+{% else %}
+	{% extends "ranking/ranking-card.html" %}
+{% endif %}
+
+{% block score %}
+	{% set best = score.best %}
+
+	<div class="r-res-rank">
+
+		<span class="r-res-rank-score">{{best|int}}p</span>
+
+		<span class="r-res-rank-time">
+			<i class="fas fa-clock"></i>
+			{{"%02d"%best.time_min}}:{{"%02d"%best.time_sec}}
+		</span>
+
+		<span class="r-res-rank-retries">
+			({{num_played}}/{{num_total}})
+		</span>
+
+		{# TODO: nyt kun rescue scoressa on mukana failatutkin niin niistä voi laskea
+		fail prosentteja ja muuta kivaa #}
+
+	</div>
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

@@ -14,7 +14,10 @@ card_renderer = field_injector("__web_event_card_renderer__")
 scoring_renderer = field_injector("__web_scoring_renderer__")
 post_parser = field_injector("__web_scoring_post_parser__")
 
+# näien importtien pitää olla noiden field_injector muuttujien jälkeen
+# vähän ruma, mutta toimii
 import robostat.web.views.judging_xsumo
+import robostat.web.views.judging_rescue
 
 @card_renderer.of(Ruleset)
 def render_generic_card(judging):

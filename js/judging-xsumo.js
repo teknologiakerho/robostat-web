@@ -1,4 +1,4 @@
-import {trigger, Judging} from "./judging-common.js";
+import {Judging, setError} from "./judging-common.js";
 
 const makeRound = (content) => 
 	`<div class='j-xsumo-round'>
@@ -167,11 +167,6 @@ class XSumoRound {
 		return {}
 	}
 
-	setError(){
-		this.$elem.addClass("j-xsumo-round-error")
-			.one("click", "input", () => this.$elem.removeClass("j-xsumo-round-error"));
-	}
-
 }
 
 class XSumoBasic extends XSumo {
@@ -266,7 +261,7 @@ class XSumoBasicRound extends XSumoRound {
 
 	verify(){
 		if(this.getFirst() === undefined){
-			this.setError();
+			setError(this.$elem);
 			return false;
 		}
 
