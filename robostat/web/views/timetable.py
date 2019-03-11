@@ -1,43 +1,48 @@
 from time import time
 from datetime import datetime
 import flask
+import sqlalchemy as sa
+from sqlalchemy.orm import contains_eager
 import robostat.db as model
 from robostat.web.glob import db
 
 def parse_ts(ts):
     return int(datetime.strptime(ts, "%d.%m.%Y %H:%M").timestamp())
 
-def query_events():
+def query_events(**kwargs):
     j_sub = db.query(model.EventJudging)\
             .filter(model.EventJudging.is_future==False)\
             .filter(model.EventJudging.event_id==model.Event.id)
 
     query = db.query(model.Event, ~j_sub.exists())\
             .join(model.Event.teams_part)\
-            .join(model.EventTeam.team)
+            .join(model.EventTeam.team)\
+            .options(
+                    contains_eager(model.Event.teams_part)
+                    .contains_eager(model.EventTeam.team)
+            )
 
-    if "b" in flask.request.values:
-        blkids = flask.request.values.getlist("b")
-        query = query.filter(model.Event.block_id.in_(blkids))
+    if "block_ids" in kwargs:
+        query = query.filter(model.Event.block_id.in_(kwargs["block_ids"]))
 
-    if "t" in flask.request.values:
-        teams = flask.request.values.getlist("t")
+    if "team_names" in kwargs:
         query = query.filter(model.Team.name.in_(teams))
 
-    # TODO "j" haku?
+    if "from_ts" in kwargs:
+        query = query.filter(model.Event.ts_sched >= kwargs["from_ts"])
 
-    if "from" in flask.request.values:
-        if request.values["from"] == "now":
-            ts_from = int(time())
-        else:
-            ts_from = parse_ts(request.values["from"])
-        query = query.filter(model.Event.ts_sched >= ts_from)
-
-    if "to" in flask.request.values:
-        ts_to = parse_ts(request.values["to"])
-        query = query.filter(model.Event.ts_sched <= ts_to)
+    if "to_ts" in kwargs:
+        query = query.filter(model.Event.ts_sched <= kwargs["to_ts"])
 
     return query.all()
+
+def get_dates():
+    query = db.query(
+        sa.func.min(model.Event.ts_sched),
+        sa.func.max(model.Event.ts_sched)
+    ).select_from(model.Event)
+
+    min_ts, max_ts = query.first()
 
 def render_timetable(event_data):
     return flask.render_template("timetable/timetable.html", event_data=event_data)
@@ -49,5 +54,24 @@ class TimetableView(flask.Blueprint):
         self.add_url_rule("/", "index", self.index)
 
     def index(self):
-        event_data = query_events()
+        event_data = self.get_events()
+
         return render_timetable(event_data=event_data)
+
+    def get_events(self):
+        flt = {}
+        
+        if "b" in flask.request.values:
+            flt["block_ids"] = flask.request.values.getlist("b")
+
+        if "t" in flask.request.values:
+            flt["team_names"] = flask.request.values.getlist("t")
+
+        if "from" in flask.request.values:
+            flt["from_ts"] = int(time()) if request.values["from"] == "now"\
+                    else parse_ts(request.values["from"])
+
+        if "to" in flask.request.values:
+            flt["to_ts"] =  parse_ts(request.values["to"])
+
+        return query_events(**flt)
