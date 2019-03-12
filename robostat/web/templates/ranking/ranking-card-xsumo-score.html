@@ -1,19 +1,10 @@
+{% import "ranking/util.html" as u %}
+
 {% if score.played == 0 %}
 	{% extends "ranking/ranking-card-unranked.html" %}
 {% else %}
 	{% extends "ranking/ranking-card.html" %}
 {% endif %}
-
-{% macro bar(w, l, t, f) %}
-	{% set total = w+l+t+f %}
-	{% set cs = [(w, "win"), (t, "tie"), (l, "lose"), (f, "future")] %}
-	<div class="r-xsumo-bar">
-		{% for v, c in cs if v>0 %}
-			<div class="r-xsumo-bar-part r-xsumo-{{c}}" style="width:{{(100*v/total)}}%">
-			</div>
-		{% endfor %}
-	</div>
-{% endmacro %}
 
 {% block score %}
 	<div class="r-xsumo-rank-score">
@@ -36,7 +27,12 @@
 		</table>
 	{% else %}
 		<div class="r-xsumo-rank-details-compact">
-			{{ bar(score.wins, score.losses, score.ties, score.unplayed) }}
+			{{ u.bar_parts(
+				(score.wins, "r-xsumo-win"),
+				(score.ties, "r-xsumo-tie"),
+				(score.losses, "r-xsumo-lose"),
+				(score.unplayed, "r-xsumo-future")
+			) }}
 			<br/>
 			<span class="r-xsumo-text-win">{{score.wins}}</span> /
 			<span class="r-xsumo-text-tie">{{score.ties}}</span> /

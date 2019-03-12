@@ -1,0 +1,11 @@
+{% macro bar_parts() %}
+	{% set total = varargs|sum(attribute=0) %}
+	<div class="r-bar {{kwargs['class']|default('r-bar-default')}}">
+		{% for n, c in varargs if n>0 %}
+			<div class="r-bar-part {{c}}" style="width:{{100*n/total}}%">
+			</div>
+		{% endfor %}
+	</div>
+{% endmacro %}
+
+{# vim: set ft=htmldjango: #}
