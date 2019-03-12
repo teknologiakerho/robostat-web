@@ -1,3 +1,19 @@
+{% import "ranking/util.html" as u %}
+
+{% macro time(s) %}
+	<span class="r-res-rank-time r-res-text-time">
+		<i class="fas fa-clock"></i>
+		{{"%02d"%s.time_min}}:{{"%02d"%s.time_sec}}
+	</span>
+{% endmacro %}
+
+{% macro detail(s) %}
+	<div>
+		<span class="r-res-rank-score">{{s|int}}p</span>
+		{{ time(s) }}
+	</div>
+{% endmacro %}
+
 {% set num_played = score.played_scores|length %}
 {% set num_total = score.all|length %}
 
@@ -10,23 +26,67 @@
 {% block score %}
 	{% set best = score.best %}
 
-	<div class="r-res-rank">
+	{% if rank == 1 %}
+		{{ detail(best) }}
 
-		<span class="r-res-rank-score">{{best|int}}p</span>
+		<table class="r-rank-details-table">
+			<tr>
+				{# <td class="r-res-border-time">Aika</td> #}
+				<td class="r-border-win">Onnistuneet</td>
+				<td class="r-border-tie">2. Yritys</td>
+				<td class="r-border-lose">Virheet</td>
+				<td class="r-border-future">Suoritukset</td>
+			</tr>
+			<tr>
+				{# <td class="r-res-text-time">{{time(best)}}</td> #}
+				<td>{{bar_data.success1}}</td>
+				<td>{{bar_data.success2}}</td>
+				<td>{{bar_data.fail}}</td>
+				<td>{{num_played}}/{{num_total}}</td>
+			</tr>
+		</table>
 
-		<span class="r-res-rank-time">
-			<i class="fas fa-clock"></i>
-			{{"%02d"%best.time_min}}:{{"%02d"%best.time_sec}}
-		</span>
+	{% else %}
+		<div class="flex-stack-responsive r-res-rank">
 
-		<span class="r-res-rank-retries">
-			({{num_played}}/{{num_total}})
-		</span>
+			{{ detail(best) }}
 
-		{# TODO: nyt kun rescue scoressa on mukana failatutkin niin niistä voi laskea
-		fail prosentteja ja muuta kivaa #}
+			{#
+				<span class="r-res-rank-retries">
+					{{num_played}}/{{num_total}}
+				</span>
+			#}
 
-	</div>
+			<div class="r-bar-stack">
+				{{ u.bar_parts(
+					(bar_data.success1, "r-win"),
+					(bar_data.success2, "r-tie"),
+					(bar_data.fail, "r-lose")
+				) }}
+				{% if max_time %}
+					{{ u.bar_parts(
+						(best.time, "r-res-time"),
+						(max_time-best.time, "")
+					) }}
+				{% endif %}
+				{# 
+				{{ u.bar_parts(
+					(num_played, "r-future"),
+					(num_total-num_played, "")
+				) }}
+				#}
+
+				<div class="r-res-rank-details-compact">
+					<span class="r-text-win">{{bar_data.success1}}</span> /
+					<span class="r-text-tie">{{bar_data.success2}}</span> /
+					<span class="r-text-lose">{{bar_data.fail}}</span> /
+					<span class="r-text-future">{{num_played}}/{{num_total}}</span>
+				</div>
+			</div>
+
+		</div>
+	{% endif %}
+
 {% endblock %}
 
 {# vim: set ft=htmldjango: #}

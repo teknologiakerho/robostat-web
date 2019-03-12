@@ -1,5 +1,11 @@
 {% import "ranking/util.html" as u %}
 
+{% macro sc() %}
+	<div class="r-xsumo-rank-score">
+		{{score.score}}p
+	</div>
+{% endmacro %}
+
 {% if score.played == 0 %}
 	{% extends "ranking/ranking-card-unranked.html" %}
 {% else %}
@@ -7,16 +13,14 @@
 {% endif %}
 
 {% block score %}
-	<div class="r-xsumo-rank-score">
-		{{score.score}}p
-	</div>
 	{% if rank == 1 %}
-		<table class="r-xsumo-rank-details-table">
+		{{ sc() }}
+		<table class="r-rank-details-table">
 			<tr>
-				<td class="r-xsumo-border-win">Voitot</td>
-				<td class="r-xsumo-border-tie">Tasapelit</td>
-				<td class="r-xsumo-border-lose">Häviöt</td>
-				<td class="r-xsumo-border-future">Pelaamatta</td>
+				<td class="r-border-win">Voitot</td>
+				<td class="r-border-tie">Tasapelit</td>
+				<td class="r-border-lose">Häviöt</td>
+				<td class="r-border-future">Pelaamatta</td>
 			</tr>
 			<tr>
 				<td>{{score.wins}}</td>
@@ -26,18 +30,21 @@
 			</tr>
 		</table>
 	{% else %}
-		<div class="r-xsumo-rank-details-compact">
-			{{ u.bar_parts(
-				(score.wins, "r-xsumo-win"),
-				(score.ties, "r-xsumo-tie"),
-				(score.losses, "r-xsumo-lose"),
-				(score.unplayed, "r-xsumo-future")
-			) }}
-			<br/>
-			<span class="r-xsumo-text-win">{{score.wins}}</span> /
-			<span class="r-xsumo-text-tie">{{score.ties}}</span> /
-			<span class="r-xsumo-text-lose">{{score.losses}}</span> /
-			<span class="r-xsumo-text-future">{{score.unplayed}}</span>
+		<div class="flex-stack-responsive r-xsumo-rank">
+			{{ sc() }}
+			<div class="r-xsumo-rank-details-compact">
+				{{ u.bar_parts(
+					(score.wins, "r-win"),
+					(score.ties, "r-tie"),
+					(score.losses, "r-lose"),
+					(score.unplayed, "r-future")
+				) }}
+				<br/>
+				<span class="r-text-win">{{score.wins}}</span> /
+				<span class="r-text-tie">{{score.ties}}</span> /
+				<span class="r-text-lose">{{score.losses}}</span> /
+				<span class="r-text-future">{{score.unplayed}}</span>
+			</div>
 		</div>
 	{% endif %}
 {% endblock %}

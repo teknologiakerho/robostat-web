@@ -10,6 +10,16 @@ $container-padding: 20px;
 	}
 }
 
+.flex-stack-responsive {
+	display: flex;
+}
+
+@media(max-width: $small-screen) {
+	.flex-stack-responsive {
+		flex-direction: column;
+	}
+}
+
 .plain-input {
 	-webkit-appearance: none;
 	-moz-appearance: none;

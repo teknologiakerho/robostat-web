@@ -1,14 +1,7 @@
+$color-time: #1E88E5;
+
 .r-res-rank {
-	display: flex;
 	align-items: center;
-}
-
-.r-rank-card-leader > .r-res-rank {
-	font-size: 1.5em;
-}
-
-.r-res-rank > * {
-	margin: 0 14px;
 }
 
 .r-res-rank-score {
@@ -16,10 +9,47 @@
 }
 
 .r-res-rank-time {
-	opacity: 0.85;
+	white-space: nowrap;
+	margin: 0 8px;
+}
+
+@media(max-width: $small-screen) {
+	.r-res-rank {
+		align-items: flex-end;
+	}
+
+	.r-rank-card-leader > .r-res-rank {
+		align-items: flex-start;
+	}
+	
+	.r-res-rank-time {
+		margin-right: 0;
+	}
+}
+
+.r-rank-card-leader .r-res-rank-score, .r-rank-card-leader .r-res-rank-time {
+	font-weight: normal;
+	font-size: 1.5em;
 }
 
 .r-res-rank-retries {
 	opacity: 0.75;
 	font-size: 0.9em;
+}
+
+.r-res-time {
+	background: $color-time;
+}
+
+.r-res-text-time {
+	color: $color-time;
+}
+
+.r-res-border-time {
+	border-color: $color-time;
+}
+
+.r-res-rank-details-compact {
+	font-size: 0.8em;
+	text-align: right;
 }

@@ -38,6 +38,8 @@
 	align-items: center;
 
 	border-bottom: 1px solid $divider-color;
+
+	padding: 2px 4px;
 }
 
 .r-rank-card:not(.r-rank-card-leader):nth-child(2n) {
@@ -52,7 +54,7 @@
 	font-weight: bold;
 	font-size: 1.1em;
 
-	padding: 0 10px;
+	padding: 0 10px 0 6px;
 }
 
 .r-rank-card-leader > .r-rank-card-rank {
@@ -76,6 +78,10 @@
 //.r-rank-card-name {
 //	color: $text-color-dark;
 //}
+
+.r-rank-card-leader .r-rank-card-name {
+	font-size: 1.2em;
+}
 
 .r-rank-card-school {
 	font-style: italic;

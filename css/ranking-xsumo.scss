@@ -1,8 +1,3 @@
-$color-win: #7CB342; //#CDDC39;
-$color-lose: #F44336;
-$color-tie: #F9A825;//#FFEB3B;
-$color-future: #999999;
-
 $matrix-cell-size: 40px;
 $matrix-header-size: 100px;
 $matrix-divider-color: #e5e5e5;
@@ -10,31 +5,28 @@ $matrix-divider-width: 1px;
 
 /** ranking-card */
 
+.r-xsumo-rank {
+	align-items: center;
+}
+
+@media(max-width: $small-screen) {
+	.r-xsumo-rank {
+		align-items: flex-end;
+	}
+
+	.r-rank-card-leader .r-xsumo-rank {
+		align-items: flex-start;
+	}
+}
+
 .r-xsumo-rank-score {
 	font-weight: bold;
 }
 
-.r-rank-card-leader > .r-xsumo-rank-score {
+.r-rank-card-leader .r-xsumo-rank-score {
 	font-weight: normal;
 	font-size: 1.5em;
 	padding: 0 20px;
-}
-
-.r-xsumo-rank-details-table {
-	border-spacing: 10px 0;
-	border-collapse: separate;
-}
-
-.r-xsumo-rank-details-table tr:first-child td {
-	font-size: 0.7em;
-	font-weight: bold;
-	text-transform: uppercase;
-	border-width: 0 0 2px 0;
-	border-style: solid;
-}
-
-.r-xsumo-rank-details-table td {
-	padding: 0 5px 0 0;
 }
 
 .r-xsumo-rank-details-compact {
@@ -53,19 +45,6 @@ $matrix-divider-width: 1px;
 .r-xsumo-bar-part {
 	display: inline-block;
 	height: 100%;
-}
-
-@each $name, $color in win $color-win, lose $color-lose, tie $color-tie, future $color-future {
-	/* css variablet kävis tähän hyvin */
-	.r-xsumo-#{$name} {
-		background: $color;
-	}
-	.r-xsumo-text-#{$name} {
-		color: $color;
-	}
-	.r-xsumo-border-#{$name} {
-		border-color: $color;
-	}
 }
 
 /** matrix */

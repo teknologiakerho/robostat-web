@@ -8,4 +8,14 @@
 	</div>
 {% endmacro %}
 
+{% macro bars_stacked() %}
+	<div class="r-bar-stack {{kwargs['class']|default('')}}">
+		{% for n, M, c in varargs %}
+			<div class="r-bar {{kwargs['barclass']|default('r-bar-default')}} {{c}}"
+				 style="width:{{100*n/M}}">
+			</div>
+		{% endfor %}
+	</div>
+{% endmacro %}
+
 {# vim: set ft=htmldjango: #}
