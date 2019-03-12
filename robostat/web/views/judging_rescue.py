@@ -69,9 +69,8 @@ def parse_post(judging):
 
     ret = ruleset.create_score()
 
-    for k,v in ret.__cats__:
-        if k != "time":
-            setattr(ret, k, cat_decoder[v](scores[k]))
+    for k,v in ret.score_categories:
+        setattr(ret, k, cat_decoder[v](scores[k]))
 
     time = json["time"]
     ret.time = 60*time["min"] + time["sec"]
