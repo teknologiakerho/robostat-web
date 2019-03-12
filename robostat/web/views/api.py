@@ -5,6 +5,7 @@ from sqlalchemy.orm import selectinload
 import robostat.db as model
 from robostat.util import enumerate_rank
 from robostat.rulesets.xsumo import XSumoRank
+from robostat.rulesets.rescue import RescueRank, RescueScore
 from robostat.web.glob import db
 from robostat.web.util import field_injector, get_ranking, get_block
 
@@ -18,6 +19,20 @@ def jsonify_xsumo_rank(rank):
         "ties": rank.ties,
         "losses": rank.losses,
         "unplayed": rank.unplayed
+    }
+
+@jsonifier.of(RescueRank)
+def jsonify_rescue_rank(rank):
+    return {
+        "best": jsonifier[rank.best](rank.best),
+        "others": [(jsonifier[s](s) if s is not None else None) for s in rank.other_scores]
+    }
+
+@jsonifier.of(RescueScore)
+def jsonify_rescue_score(score):
+    return {
+        "score": int(score),
+        "time": score.time
     }
 
 @jsonifier.of(model.Team)
