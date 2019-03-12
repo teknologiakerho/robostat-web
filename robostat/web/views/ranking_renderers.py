@@ -3,7 +3,7 @@ import flask
 import random # testi
 from robostat.util import udict
 from robostat.rulesets.xsumo import XSumoRank, XSumoScoreRank, XSumoWinsRank
-from robostat.rulesets.rescue import RescueRank
+from robostat.rulesets.rescue import RescueRank, FAIL, SUCCESS_1, SUCCESS_2
 from robostat.web.views.ranking import card_renderer
 
 # XXX pitäskö field_injectoriin laittaa set_default()?
@@ -75,10 +75,31 @@ def render_xsumo_matrix(events, **kwargs):
             **kwargs
     )
 
+def get_rescue_bar(score):
+    ret = [0, 0, 0]
+
+    for k,v in score.score_categories:
+        val = getattr(score, k)
+        if isinstance(val, int):
+            ret[val] += 1
+        else:
+            ret[FAIL] += val.fail
+            ret[SUCCESS_1] += val.success1
+            ret[SUCCESS_2] += val.success2
+
+    return ret
+
 @card_renderer.of(RescueRank)
-def render_rescue_card(rank, team, score):
+def render_rescue_card(rank, team, score, max_time=None):
+    f, s2, s1 = get_rescue_bar(score.best)
+
     return flask.render_template("ranking/ranking-card-rescue.html",
             rank=rank,
             team=team,
-            score=score
+            score=score,
+            max_time=max_time,
+            bar_data={"fail":f, "success1":s1, "success2":s2}
     )
+
+def rescue_card_renderer(ruleset):
+    return lambda rank, team, score: render_rescue_card(rank, team, score, ruleset.max_time)

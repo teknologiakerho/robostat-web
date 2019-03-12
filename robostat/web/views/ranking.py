@@ -45,7 +45,7 @@ class RankingView(flask.Blueprint):
                 name=ranking.name,
                 id=ranking.id,
                 ranking=ranking(db),
-                render_card=self.render_rank_card,
+                render_card=card_renderer.get(ranking, default=self.render_rank_card),
                 has_details=ranking in details_renderer
         )
 
