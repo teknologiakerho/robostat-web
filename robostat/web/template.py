@@ -24,7 +24,7 @@ def localdate(x, fmt="%-d.%-m.%Y %H:%M"):
 
 @res.app_template_filter()
 def nfmt(num):
-    if abs(num - int(num)) < 1e-15:
-        return "%d" % num
+    if abs(num - round(num)) < 1e-15:
+        num = round(num)
 
     return str(num)
