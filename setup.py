@@ -9,10 +9,6 @@ setup(
         install_requires = [
             "robostat3-core",
             "sqlalchemy",
-            "click",
             "flask"
-        ],
-        scripts = [
-            "scripts/rsman"
         ]
 )
