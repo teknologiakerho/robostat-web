@@ -6,6 +6,6 @@ from robostat.web.util import decode_score
 Team.school = sa.Column(sa.Text, default="", nullable=False)
 Team.desc = sa.Column(sa.Text, default="", nullable=False)
 
-Judge.key = sa.Column(sa.Text, unique=True, nullable=False)
+Judge.key = sa.Column(sa.Text, unique=True, nullable=True)
 
 Score.score_obj = lazy(decode_score)
