@@ -1,0 +1,13 @@
+<div class="t-event-container">
+	{% block meta %}
+	{% endblock %}
+	{% block teams %}
+		{% for t in event.teams %}
+			<span class="t-event-team">
+				{{t.name}}
+			</span>
+		{% endfor %}
+	{% endblock %}
+</div>
+
+{# vim: set ft=htmldjango: #}

@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block css %}
+	{{ super() }}
+	{{ static_css("lib/selectize.min.css") }}
+	{{ static_css("timetable.min.css") }}
+{% endblock %}
+
+{% block js %}
+	{{ super() }}
+	{{ static_script("lib/jquery.min.js") }}
+	{{ static_script("lib/selectize.min.js") }}
+	<script type="text/javascript">
+		$("#teams-select").selectize();
+	</script>
+{% endblock %}
+
+{% block body_content %}
+	<div class="container">
+
+		<form action="{{url_for('.index')}}" target="_blank" method="POST">
+
+			<div class="t-search">
+
+				{% block teams %}
+					<div class="t-search-section">
+						<div class="t-search-header">
+							Joukkueet
+						</div>
+						<div class="t-search-content">
+							<select multiple name="t" id="teams-select">
+								{% for team in teams %}
+									<option value="{{team.name}}">{{team.name}}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+				{% endblock %}
+
+				{% block time %}
+					{% if days %}
+						<div class="t-search-section">
+							<div class="t-search-header">
+								Päivät
+							</div>
+							<div class="t-search-content">
+								<div class="t-checkboxes">
+									{% for day in days %}
+										{% set v = day|localdate("%d.%m.%Y") %}
+										<div class="t-checkbox-container">
+											<input type="checkbox"
+												   name="day"
+												   value="{{v}}"
+												   id="day{{v}}"
+												   />
+											<label class="t-label" for="day{{v}}">
+												{{v}}
+											</label>
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+						</div>
+					{% endif %}
+				{% endblock %}
+
+				{% block blocks %}
+					{% if blocks %}
+						<div class="t-search-section">
+							<div class="t-search-header">
+								Lohkot
+							</div>
+							<div class="t-search-content">
+								<div class="t-checkboxes">
+									{% for b in blocks %}
+										<div class="t-checkbox-container">
+											<input type="checkbox"
+												   name="b"
+												   value="{{b.id}}"
+												   id="b{{b.id}}"
+													/>
+											<label class="t-label" for="b{{b.id}}">
+												{{b.name}}
+											</label>
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+						</div>
+					{% endif %}
+				{% endblock %}
+
+			</div>
+
+			{% block submit %}
+				<button class="plain-input t-submit">
+					Hae aikataulu
+				</button>
+			{% endblock %}
+
+		</form>
+
+	</div>
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

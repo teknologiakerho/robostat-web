@@ -1,35 +1,100 @@
 {% extends "base.html" %}
 
-{% macro event_desc(event) %}
-	{{event.teams|map(attribute="name")|join(" - ")}}
-{% endmacro %}
-
 {% block css %}
 	{{ super() }}
 	{{ static_css("timetable.min.css") }}
+	<link
+		rel="stylesheet"
+		href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+		integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+		crossorigin="anonymous"
+		/>
 {% endblock %}
 
 {% block body_content %}
 	<div class="container">
+
+		{% if event_filter %}
+
+			<div class="t-filter-info">
+				<ul class="t-filter-list">
+
+					{% if event_filter.team_names %}
+						<li>
+							Vain seuraavien joukkueiden suoritukset näytetään:
+							<ul class="t-filter-item-list">
+								{% for tname in event_filter.team_names %}
+									<li>{{tname}}</li>
+								{% endfor %}
+							</ul>
+						</li>
+					{% endif %}
+
+					{% if event_filter.intervals %}
+						<li>
+							Vain seuraavat aikavälit näytetään:
+							<ul class="t-filter-item-list">
+								{% for start,end in event_filter.intervals %}
+									<li>{{start|localdate("%-d.%-m.%Y %H:%M")}}
+										- {{end|localdate("%-d.%-m.%Y %H:%M")}}
+									</li>
+								{% endfor %}
+							</ul>
+						</li>
+					{% endif %}
+
+					{% if event_filter.block_ids %}
+						<li>
+							Vain seuraavat lohkot näytetään:
+							<ul class="t-filter-item-list">
+								{% for blkid in event_filter.block_ids %}
+									<li>{{blkid}}</li>
+								{% endfor %}
+							</ul>
+						</li>
+					{% endif %}
+
+					<li>
+						<a class="t-filter-remove" href="{{url_for('.index')}}">
+							[Poista hakuehdot]
+						</a>
+					</li>
+
+				</ul>
+
+			</div>
+
+		{% endif %}
+
 		<table class="t-timetable">
-			{% for day, day_events in event_data
-				|sort(attribute="0.ts_sched")
-				|groupby("0.day_sched") %}
+			{% for day, day_events in event_data|groupby("day_sched") %}
 				<tr>
-					<th colspan=5>
+					<th colspan=999>
 						{{day|localdate("%-d.%-m.%Y")}}
 					</th>
 				</tr>
-				{% for event, is_future in day_events %}
-					<tr class="t-timetable-row">
-						<td>{{event.ts_sched|localdate("%H:%M")}}</td>
-						<td>{{event_desc(event)}}</td>
-						<td>{{get_block(event).name}}</td>
-						<td>{{event.arena}}</td>
-					</tr>
+
+				{% for ts, ts_events in day_events|groupby("ts_sched") %}
+					{% for event in ts_events %}
+						<tr class="t-timetable-row {%if loop.first%}t-timetable-row-first{%endif%}">
+							{% if loop.first %}
+								<td class="t-time">
+									<i class="fas fa-clock"></i>
+									{{ts|localdate("%H:%M")}}
+								</td>
+							{% else %}
+								<td class="t-time"></td>
+							{% endif %}
+							<td class="t-event">
+								{{render_event(event)|safe}}
+							</td>
+							<td class="t-location">{{event.arena}}</td>
+						</tr>
+					{% endfor %}
 				{% endfor %}
 			{% endfor %}
 		</table>
+
 	</div>
 {% endblock %}
 
