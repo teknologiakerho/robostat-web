@@ -120,9 +120,6 @@ $matrix-divider-width: 1px;
 	text-align: center;
 	overflow: hidden;
 	border-right: $matrix-divider-width solid $matrix-divider-color;
-
-	// XXX: tää on viritys scrollbarien padding korjaamiseen
-	padding-bottom: 1000px;
 }
 
 .r-xsumo-matrix-rowname {
