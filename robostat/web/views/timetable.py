@@ -73,7 +73,7 @@ class TimetableView(flask.Blueprint):
         )
 
     def search(self):
-        teams = db.query(model.Team).all()
+        teams = db.query(model.Team).order_by(model.Team.name).all()
         days = db.query(sa.func.strftime(
             "%s",
             model.Event.ts_sched,
