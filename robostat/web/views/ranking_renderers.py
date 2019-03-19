@@ -41,6 +41,9 @@ def render_xsumo_matrix(events, **kwargs):
     for e in events:
         # xsumo always has 2 scores by 1 judge and either both or none are null
         s1, s2 = e.scores
+        if not s1.has_score:
+            continue
+
         sd1 = { "score_value": int(s1.score_obj) }
         sd2 = { "score_value": int(s2.score_obj) }
         ed = {}
@@ -57,7 +60,7 @@ def render_xsumo_matrix(events, **kwargs):
         ))
 
     team_data = [{"name": t.name} for t in teams]
-    event_data = [[d[t1][t2] if t1 != t2 else None for t2 in teams] for t1 in teams]
+    event_data = [[d[t1].get(t2) for t2 in teams] for t1 in teams]
 
     #team_data = [{"name": "Joukkue %d" % i} for i in range(16)]
     #event_data = [[None] * 16 for _ in range(16)]
