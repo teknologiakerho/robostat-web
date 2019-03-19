@@ -2,7 +2,7 @@
 	{% block meta %}
 	{% endblock %}
 	{% block teams %}
-		{% for t in event.teams %}
+		{% for t in event.teams_sorted %}
 			<span class="t-event-team">
 				{{t.name}}
 			</span>

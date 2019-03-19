@@ -10,7 +10,7 @@ def get_basic_event_data(judging):
     ret["teams"] = [{
         "id": s.team.id,
         "name": s.team.name
-        } for s in judging.scores]
+        } for s in sorted(judging.scores, key=lambda x: x.team.name)]
 
     if not judging.is_future:
         ret["rounds"] = [{

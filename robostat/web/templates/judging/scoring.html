@@ -1,9 +1,10 @@
 {% extends "judging/base.html" %}
 
 {% set event = judging.event %}
+{% set teams = event.teams_sorted %}
 
 {% block title %}
-	{{ event.teams|map(attribute="name")|join(" vs ") }} | Tuomarointi - RoboStat
+	{{ teams|map(attribute="name")|join(" vs ") }} | Tuomarointi - RoboStat
 {% endblock %}
 
 {% block js %}
@@ -31,9 +32,9 @@
 			<td>{{event.ts_sched|localdate}}</td>
 		</tr>
 		<tr>
-			<td>Joukkue{% if event.teams|length > 1 %}et{% endif %}</td>
+			<td>Joukkue{% if teams|length > 1 %}et{% endif %}</td>
 			<td>
-				{% for t in event.teams %}
+				{% for t in teams %}
 					<strong>{{t.name}}</strong> ({{t.school}}) <br/>
 				{% endfor %}
 			</td>
