@@ -1,0 +1,20 @@
+{% extends "judging/scoring.html" %}
+
+{% block form %}
+	<div class="j-haast" id="j-scoring">
+		<input type="checkbox" id="j-haast-done" data-haast-check=1
+							   {% if done %}checked{% endif %} />
+		<label for="j-haast-done">
+			Haastattelu suoritettu
+		</label>
+	</div>
+{% endblock %}
+
+{% block js %}
+	{{ super() }}
+	<script type="text/javascript">
+		judging.haastattelu("#j-scoring");
+	</script>
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

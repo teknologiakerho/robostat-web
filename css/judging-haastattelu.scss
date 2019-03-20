@@ -1,0 +1,16 @@
+.j-event-card-haast {
+	border-left: 4px solid lighten($haast-color, 10%);
+}
+
+.j-haast {
+	padding: 40px 0;
+	font-size: 1.2em;
+}
+
+.j-haast-success {
+	color: #4CAF50;
+}
+
+.j-haast-fail {
+	color: #F44336;
+}

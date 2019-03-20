@@ -1,0 +1,38 @@
+{% extends "judging/event-card.html" %}
+
+{% block classes %}
+	{{ super() }}
+	j-event-card-haast
+{% endblock %}
+
+{% block title %}
+	{{ judging.event.team.name }}
+{% endblock %}
+
+{% block data %}
+{% endblock %}
+
+{% block meta %}
+	{{ super() }}
+	<br/>
+	<strong class="text-haastattelu">
+		<i class="fas fa-comments"></i>
+		Haastattelu
+	</strong>
+{% endblock %}
+
+{% block score %}
+	{% if judging.score.score_obj %}
+		<span class="j-haast-success">
+			<i class="fas fa-check"></i>
+			Hyväksytty
+		</span>
+	{% else %}
+		<span class="j-haast-fail">
+			<i class="fas fa-times"></i>
+			Ei hyväksytty
+		</span>
+	{% endif %}
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

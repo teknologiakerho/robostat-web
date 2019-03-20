@@ -18,6 +18,7 @@ post_parser = field_injector("__web_scoring_post_parser__")
 # vähän ruma, mutta toimii
 import robostat.web.views.judging_xsumo
 import robostat.web.views.judging_rescue
+import robostat.web.views.judging_haast
 
 @card_renderer.of(Ruleset)
 def render_generic_card(judging):
