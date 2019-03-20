@@ -7,6 +7,10 @@ $text-color-active: #ffffff;
 
 $radio-size: 60px;
 
+.j-event-card-xsumo {
+	border-left: 4px solid lighten($xsumo-color, 10%);
+}
+
 .j-xsumo {
 	margin-top: 20px;
 }

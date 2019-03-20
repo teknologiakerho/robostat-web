@@ -3,7 +3,7 @@
 {# TODO: tää näyttää huonolta pienillä näytöllä,
 	tohon vois tunkee jonku @media jutun pienille näytöille #}
 
-<div class="j-event-card">
+<div class="{% block classes %}j-event-card{% endblock %}">
 
 	<div class="j-event-card-ts">
 		{{event.ts_sched|localdate("%H:%M")}}
@@ -12,6 +12,7 @@
 	<div class="j-event-card-meta">
 		<div class="j-event-card-place">
 			{% block meta %}
+				<i class="fas fa-map-marker"></i>
 				{{event.arena}}
 			{% endblock %}
 		</div>
@@ -29,7 +30,9 @@
 			{% endblock %}
 		</div>
 		<div class="j-event-card-data">
-			{{ get_block(event).name }}
+			{% block data %}
+				{{ get_block(event).name }}
+			{% endblock %}
 		</div>
 	</div>
 

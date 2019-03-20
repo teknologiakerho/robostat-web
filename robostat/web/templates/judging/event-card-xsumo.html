@@ -2,6 +2,11 @@
 
 {% set scores = judging.scores|sort(attribute="team.name") %}
 
+{% block classes %}
+	{{ super() }}
+	j-event-card-xsumo
+{% endblock %}
+
 {% block title %}
 	{{scores[0].team.name}} vs. {{scores[1].team.name}}
 {% endblock %}

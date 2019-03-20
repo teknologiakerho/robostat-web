@@ -1,5 +1,10 @@
 {% extends "judging/event-card.html" %}
 
+{% block classes %}
+	{{ super() }}
+	j-event-card-res
+{% endblock %}
+
 {% block title %}
 	{{judging.event.team.name}}
 {% endblock %}

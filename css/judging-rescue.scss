@@ -2,6 +2,10 @@ $scorebox-colors: success1 $res-color-success1,
 	success2 $res-color-success2,
 	fail $res-color-fail;
 
+.j-event-card-res {
+	border-left: 4px solid lighten($rescue-color, 10%);
+}
+
 .j-res {
 	margin-top: 20px;
 }
