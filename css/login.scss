@@ -1,0 +1,34 @@
+@import "config.scss";
+
+.login-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	min-height: 100vh;
+	max-width: 400px;
+	margin: auto;
+
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+.login-meta {
+	color: $text-color-light;
+}
+
+.login-key {
+	font-size: 2em;
+	border: 1px solid $divider-color;
+	margin: 40px;
+	width: 100%;
+}
+
+.login-submit {
+	width: 100%;
+}
+
+.login-message {
+	width: 100%;
+}

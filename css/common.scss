@@ -1,3 +1,5 @@
+@import "config.scss";
+
 $container-max-size: 1000px;
 $container-padding: 20px;
 
@@ -23,4 +25,48 @@ $container-padding: 20px;
 .plain-input {
 	-webkit-appearance: none;
 	-moz-appearance: none;
+}
+
+.action-button {
+	/* Nää on varastettu UIkitistä */
+	font-size: 14px;
+	line-height: 38px;
+	
+	display: inline-block;
+	vertical-align: middle;
+	text-align: center;
+	padding: 0 30px;
+	box-sizing: border-box;
+	text-transform: uppercase;
+	border: none;
+	cursor: pointer;
+
+	transition: 300ms all;
+}
+
+.action-button:hover {
+	opacity: 0.8;
+}
+
+.primary-button {
+	background: $primary-action-color;
+	color: #fff;
+}
+
+.message {
+	padding: 10px 20px;
+	margin: 10px;
+	text-align: center;
+	box-sizing: border-box;
+}
+
+.message-error {
+	color: $danger-color;
+	border: 1px solid lighten($danger-color, 15%);
+	background: $danger-background;
+}
+
+.text-meta {
+	color: $text-color-light;
+	font-size: 0.8em;
 }

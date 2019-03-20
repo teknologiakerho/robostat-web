@@ -1,33 +1,33 @@
-{% from "util.html" import static_css, static_script %}
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Tunnistautuminen - RoboStat</title>
-		<meta charset="utf-8" />
-		{{ static_css("lib/uikit.min.css") }}
-	</head>
+{% block css %}
+	{{ super() }}
+	{{ static_css("login.min.css") }}
+{% endblock %}
 
-	<body>
-		<div class="uk-position-center">
-			<h3>Sinun on tunnistauduttava</h3>
+{% block title %}
+	Tunnistautuminen - RoboStat
+{% endblock %}
+
+{% block body_content %}
+	<form method="POST">
+		<div class="login-container">
+			<h3>Syötä tuomarointiavain</h3>
+			<span class="text-meta">
+				Sinun on kirjauduttava tuomarointiavaimella nähdäksesi tämä sivu.
+			</span>
 
 			{% if error %}
-				<div class="uk-alert-danger" uk-alert>
-					<p>Virhe: {{error}}</p>
+				<div class="message message-error login-message">
+					<strong>Virhe:</strong> {{error}}
 				</div>
 			{% endif %}
 
-			<form method="POST">
-				<input type="text" placeholder="Kirjautumisavain" name="key"
-					class="uk-input" autofocus />
-				<input type="submit" value="Kirjaudu"
-					class="uk-button uk-button-primary uk-margin uk-width-1-1" />
-			</form>
+			<input type="password" autocomplete="off" name="key" class="plain-input login-key"
+																 autofocus />
+			<input type="submit" value="Kirjaudu" class="action-button primary-button login-submit" />
 		</div>
-
-		{{ static_script("lib/uikit.min.js") }}
-	</body>
-</html>
+	</form>
+{% endblock %}
 
 {# vim: set ft=htmldjango: #}

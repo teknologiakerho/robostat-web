@@ -15,7 +15,8 @@ STATIC = robostat/web/static
 DIST = $(STATIC)
 
 JS = $(addprefix $(DIST)/, judging.min.js ranking.min.js)
-CSS = $(addprefix $(DIST)/, main.min.css judging.min.css ranking.min.css timetable.min.css)
+CSS = $(addprefix $(DIST)/, main.min.css login.min.css judging.min.css ranking.min.css\
+	  timetable.min.css)
 
 default: | $(DIST)
 default: $(JS) $(CSS)
