@@ -25,6 +25,11 @@
 
 .j-event-card {
 	position: relative;
+	transition: 100ms all;
+}
+
+.j-event-card:hover {
+	opacity: 0.3;
 }
 
 .j-event-card-ts {
