@@ -1,6 +1,3 @@
-$submit-background: #E65100;
-$submit-foreground: #fff;
-
 .j-scoring-info {
 	margin-top: 20px;
 	width: 100%;
@@ -23,12 +20,5 @@ $submit-foreground: #fff;
 
 .j-scoring-submit {
 	width: 100%;
-	border: none;
-	background: $submit-background;
-	color: $submit-foreground;
-	padding: 8px;
-	font-style: bold;
-	font-size: 1.1em;
-	cursor: pointer;
 	margin: 20px 0;
 }
