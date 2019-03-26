@@ -39,9 +39,9 @@
 			</tr>
 			<tr>
 				{# <td class="r-res-text-time">{{time(best)}}</td> #}
-				<td>{{bar_data.success1}}</td>
-				<td>{{bar_data.success2}}</td>
-				<td>{{bar_data.fail}}</td>
+				<td>{{bar_data.S}}</td>
+				<td>{{bar_data.H}}</td>
+				<td>{{bar_data.F}}</td>
 				<td>{{num_played}}/{{num_total}}</td>
 			</tr>
 		</table>
@@ -59,9 +59,9 @@
 
 			<div class="r-bar-stack">
 				{{ u.bar_parts(
-					(bar_data.success1, "r-win"),
-					(bar_data.success2, "r-tie"),
-					(bar_data.fail, "r-lose")
+					(bar_data.S, "r-win"),
+					(bar_data.H, "r-tie"),
+					(bar_data.F, "r-lose")
 				) }}
 				{% if max_time %}
 					{{ u.bar_parts(
@@ -77,9 +77,9 @@
 				#}
 
 				<div class="r-res-rank-details-compact">
-					<span class="r-text-win">{{bar_data.success1}}</span> /
-					<span class="r-text-tie">{{bar_data.success2}}</span> /
-					<span class="r-text-lose">{{bar_data.fail}}</span> /
+					<span class="r-text-win">{{bar_data.S}}</span> /
+					<span class="r-text-tie">{{bar_data.H}}</span> /
+					<span class="r-text-lose">{{bar_data.F}}</span> /
 					<span class="r-text-future">{{num_played}}/{{num_total}}</span>
 				</div>
 			</div>

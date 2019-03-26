@@ -1,8 +1,9 @@
 import time
+import functools
 import logging
+import base64
 import flask
-from werkzeug.exceptions import HTTPException
-from sqlalchemy.orm import joinedload, selectinload, subqueryload
+from sqlalchemy.orm import joinedload, subqueryload
 import robostat.db as model
 from robostat.ruleset import Ruleset, ValidationError
 from robostat.web.glob import db
@@ -14,15 +15,30 @@ card_renderer = field_injector("__web_event_card_renderer__")
 scoring_renderer = field_injector("__web_scoring_renderer__")
 post_parser = field_injector("__web_scoring_post_parser__")
 
-# näien importtien pitää olla noiden field_injector muuttujien jälkeen
-# vähän ruma, mutta toimii
-import robostat.web.views.judging_xsumo
-import robostat.web.views.judging_rescue
-import robostat.web.views.judging_haast
-
 @card_renderer.of(Ruleset)
 def render_generic_card(judging):
     return flask.render_template("judging/event-card-generic.html", judging=judging)
+
+class ScoreParserError(Exception):
+    pass
+
+def autofail_key_error(f):
+    @functools.wraps(f)
+    def ret(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except KeyError as e:
+            raise ScoreParserError(str(e))
+    return ret
+
+def check_json(f):
+    @functools.wraps(f)
+    def ret(*args, **kwargs):
+        json = flask.request.json
+        if json is None:
+            raise ScoreParserError("Invalid/missing json")
+        return f(*args, **kwargs, json=json)
+    return ret
 
 class JudgingView(flask.Blueprint):
 
@@ -44,39 +60,13 @@ class JudgingView(flask.Blueprint):
         judging = self.get_judging(user.id, id) or flask.abort(404)
 
         if flask.request.method == "POST":
-            is_fut = judging.is_future
-
             try:
-                scores = self.parse_scoring_post(judging)
-            except HTTPException:
-                request_logger.exception("Aborted score saving")
-                request_logger.log_post_body(logging.ERROR)
-                raise
-
-            try:
-                ruleset = get_block(judging.event).ruleset
-                ruleset.validate(*(s for _, s in scores))
-            except ValidationError:
-                request_logger.exception("Invalid scores")
-                request_logger.log_post_body(logging.ERROR)
-                raise
-
-            try:
-                self.save_scores(judging, scores)
+                # TODO flashaa onnistumisen jälkeen että pisteet tallennettiin tjsp
+                return self.save_score_post(judging)
             except:
                 request_logger.exception("Uncaught exception while saving scores")
                 request_logger.log_post_body(logging.ERROR)
                 raise
-            else:
-                request_logger.info("Saved scores block=%s scores: %s" % (
-                    judging.event.block_id,
-                    str(scores)
-                ))
-                request_logger.log_post_body(logging.DEBUG)
-            
-            #flask.flash("Tuomarointi tallennettiin onnistuneesti!", "success")
-            #return flask.redirect(flask.url_for(".list", what=is_fut and "future" or "past"))
-            return "OK";
 
         return self.render_scoring_form(judging)
 
@@ -133,6 +123,44 @@ class JudgingView(flask.Blueprint):
     def parse_scoring_post(self, judging):
         ruleset = get_block(judging.event).ruleset
         return post_parser[ruleset](judging)
+
+    def save_score_post(self, judging):
+        try:
+            scores = self.parse_scoring_post(judging)
+        except ScoreParserError as e:
+            request_logger.warning("Failed to parse score post: %s" % str(e))
+            request_logger.log_post_body(logging.WARNING)
+            return str(e), 400
+
+        ruleset = get_block(judging.event).ruleset
+
+        try:
+            ruleset.validate(*(s for _,s in scores))
+        except ValidationError as e:
+            request_logger.warning("Failed to validate scores: %s" % str(e))
+            request_logger.log_post_body(logging.WARNING)
+            return str(e), 400
+
+        # Jos tästä tulee joku sqlalchemy virhe vielä nyt vielä validoinnin
+        # ja kaiken jälkeen niin se ei oo virhe pyynnössä vaan bugi,
+        # joten turha enää tässä try catchata mitään
+        self.save_scores(judging, scores)
+
+        request_logger.info("Saved scores [event=%d in block %s]" % (
+            judging.event_id,
+            judging.event.block_id
+        ))
+
+        for team_id, score in scores:
+            request_logger.info("Team (id): %d | Score: %s | Base64: %s" % (
+                team_id,
+                score,
+                base64.b64encode(ruleset.encode(score)).decode("utf8")
+            ))
+
+        request_logger.log_post_body(logging.DEBUG)
+
+        return "OK: %s" % str(scores)
 
     def save_scores(self, judging, scores):
         ruleset = get_block(judging.event).ruleset

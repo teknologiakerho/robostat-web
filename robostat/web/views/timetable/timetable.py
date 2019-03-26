@@ -4,12 +4,15 @@ import flask
 import sqlalchemy as sa
 from sqlalchemy.orm import subqueryload
 import robostat.db as model
+from robostat.ruleset import Ruleset
 from robostat.web.glob import db
 from robostat.web.util import field_injector
 
 event_renderer = field_injector("__web_timetable_event_renderer__")
 
-from robostat.web.views.timetable_renderers import render_default_event
+@event_renderer.of(Ruleset)
+def render_default_event(event):
+    return flask.render_template("timetable/event.html", event=event)
 
 def parse_date(ts):
     return int(datetime.strptime(ts, "%d.%m.%Y").timestamp())

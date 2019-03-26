@@ -1,23 +1,20 @@
 import flask
-from robostat.rulesets.rescue import RescueRuleset, WEIGHTS, RescueObstacleCategory,\
-        RescueMultiObstacleCategory, RescueMultiObstacleScore, FAIL, SUCCESS_1, SUCCESS_2
+from robostat.rulesets.rescue import RescueRuleset, RescueResult, WEIGHTS, RescueObstacleCategory,\
+        RescueMultiObstacleCategory, RescueMultiObstacleScore
 from robostat.web.util import get_block, field_injector
-from robostat.web.views.judging import card_renderer, scoring_renderer, post_parser
+from robostat.web.views.judging import ScoreParserError, card_renderer, scoring_renderer,\
+        post_parser, autofail_key_error, check_json
 
 cat_encoder = field_injector("__web_rescue_cat_encoder__")
 cat_decoder = field_injector("__web_rescue_cat_decoder__")
 
 @cat_encoder.of(RescueObstacleCategory)
 def encode_obstacle(val):
-    return ["fail", "success2", "success1"][val]
+    return str(val)
 
 @cat_decoder.of(RescueObstacleCategory)
 def decode_obstacle(val):
-    return {
-        "fail": FAIL,
-        "success2": SUCCESS_2,
-        "success1": SUCCESS_1
-    }[val["value"]]
+    return RescueResult(val["value"])
 
 @cat_encoder.of(RescueMultiObstacleCategory)
 def encode_multi_obstacle(val):
@@ -62,9 +59,10 @@ def render_scoring(judging):
     )
 
 @post_parser.of(RescueRuleset)
-def parse_post(judging):
+@autofail_key_error
+@check_json
+def parse_post(judging, json):
     ruleset = get_block(judging.event).ruleset
-    json = flask.request.json
     scores = json["scores"]
 
     ret = ruleset.create_score()
@@ -73,6 +71,16 @@ def parse_post(judging):
         setattr(ret, k, cat_decoder[v](scores[k]))
 
     time = json["time"]
-    ret.time = 60*time["min"] + time["sec"]
 
-    return [(judging.event.team.id, ret), ]
+    try:
+        t_min = int(time["min"])
+        t_sec = int(time["sec"])
+    except TypeError as e:
+        raise ScoreParserError("Invalid time: %s" % str(e))
+
+    # Tässä ei tarkisteta että nää olis positiivia tai että t_sec<60
+    # mutta eipä se haittaa että tähän voi laittaa virheellisiä arvoja
+    # koska koko score tarkistetaan myöhemmin
+    ret.time = 60*t_min + t_sec
+
+    return (judging.event.team.id, ret),

@@ -64,7 +64,7 @@
 		<table class="t-timetable">
 			{% for day, day_events in event_data|groupby("day_sched") %}
 				<tr>
-					<th colspan=999>
+					<th colspan=10>
 						{{day|localdate("%-d.%-m.%Y")}}
 					</th>
 				</tr>

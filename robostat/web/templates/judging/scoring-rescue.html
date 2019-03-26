@@ -13,7 +13,7 @@
 			<div class="j-res-radio-container">
 				<input class="j-res-input j-res-radio j-res-scorebox-success1 j-res-radio-success1"
 					   type="radio"
-					   value="success1"
+					   value="S"
 					   name="{{name}}"
 					   data-res-weight={{weight}}
 					   />
@@ -26,7 +26,7 @@
 			<div class="j-res-radio-container">
 				<input class="j-res-input j-res-radio j-res-scorebox-success2 j-res-radio-success2"
 					   type="radio"
-					   value="success2"
+					   value="H"
 					   name="{{name}}"
 					   data-res-weight={{weight/2}}
 					   />
@@ -39,7 +39,7 @@
 			<div class="j-res-radio-container">
 				<input class="j-res-input j-res-radio j-res-scorebox-fail j-res-radio-fail"
 					   type="radio"
-					   value="fail"
+					   value="F"
 					   name="{{name}}"
 					   data-res-weight=0
 					   checked
@@ -91,13 +91,13 @@
 
 				<tr class="j-res-head">
 					<th>Haaste</th>
-					<th colspan=999>Annetut pisteet</th>
+					<th colspan=10>Annetut pisteet</th>
 				</tr>
 
 				<tbody data-res-section="viiva">
 					{% block scoring_viiva %}
 						<tr class="j-res-section-head">
-							<th colspan=999>
+							<th colspan=10>
 								1. Viivapalat
 							</th>
 						</tr>
@@ -107,7 +107,7 @@
 				{% block total_viiva %}
 					<tr>
 						<td class="j-res-desc"><strong>Yhteensä viivasta</strong></td>
-						<td colspan=999 class="j-res-total" data-res-total="viiva">
+						<td colspan=10 class="j-res-total" data-res-total="viiva">
 							0
 						</td>
 					</tr>
@@ -116,7 +116,7 @@
 				<tbody data-res-section="uhri">
 					{% block scoring_uhri %}
 						<tr class="j-res-section-head">
-							<th colspan=999>
+							<th colspan=10>
 								2. Uhrinpelastusalue
 							</th>
 						</tr>
@@ -126,7 +126,7 @@
 				{% block total_uhri %}
 					<tr>
 						<td class="j-res-desc"><strong>Yhteensä uhrinpelastuksesta</strong></td>
-						<td colspan=999 class="j-res-total" data-res-total="uhri">
+						<td colspan=10 class="j-res-total" data-res-total="uhri">
 							0
 						</td>
 					</tr>
@@ -134,7 +134,7 @@
 
 				{% block total %}
 					<tr class="j-res-section-head">
-						<th colspan=999>
+						<th colspan=10>
 							3. Yhteenveto
 						</th>
 					</tr>
@@ -143,7 +143,7 @@
 						<td class="j-res-desc">
 							<strong>Pisteet</strong>
 						</td>
-						<td colspan=999 class="j-res-total">
+						<td colspan=10 class="j-res-total">
 							<span data-res-total="viiva">0</span>
 							+
 							<span data-res-total="uhri">0</span>
@@ -157,7 +157,7 @@
 							Aika
 						</td>
 
-						<td colspan=999 class="j-res-total">
+						<td colspan=10 class="j-res-total">
 							<input type="text" name="time_min" size=2 /> m
 							<input type="text" name="time_sec" size=2 /> s
 						</td>

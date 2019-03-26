@@ -7,7 +7,16 @@ from robostat.web.util import get_block, field_injector, get_ranking
 card_renderer = field_injector("__web_ranking_card_renderer__")
 details_renderer = field_injector("__web_ranking_details_renderer__")
 
-from robostat.web.views.ranking_renderers import render_default_block, render_default_card
+# XXX pitäskö field_injectoriin laittaa set_default()?
+def render_default_card(rank, team, score):
+    return flask.render_template("ranking/ranking-card-default.html",
+            rank=rank,
+            team=team,
+            score=score
+    )
+
+def render_default_block(events):
+    return flask.render_template("ranking/block-scores-default.html", events=events)
 
 def source_renderer(renderer=render_default_block):
     def deco(f):

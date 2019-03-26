@@ -1,14 +1,9 @@
 import flask
-from robostat.ruleset import Ruleset
 from robostat.rulesets.xsumo import XSumoRuleset
 from robostat.rulesets.rescue import RescueRuleset
 from robostat.rulesets.tanssi import DanceInterviewRuleset, DancePerformanceRuleset
 from robostat.rulesets.haastattelu import HaastatteluRuleset
 from robostat.web.views.timetable import event_renderer
-
-@event_renderer.of(Ruleset)
-def render_default_event(event):
-    return flask.render_template("timetable/event.html", event=event)
 
 @event_renderer.of(XSumoRuleset)
 def render_xsumo_event(event):
