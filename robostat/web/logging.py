@@ -23,6 +23,6 @@ class RequestLoggerAdapter(logging.LoggerAdapter):
         return ret, kwargs
 
     def log_post_body(self, level=logging.INFO):
-        return self.log(level, str(flask.request.form))
+        return self.log(level, flask.request.get_data().decode("utf8"))
 
 request_logger = RequestLoggerAdapter(logger, None)
