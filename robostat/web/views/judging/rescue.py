@@ -14,7 +14,10 @@ def encode_obstacle(val):
 
 @cat_decoder.of(RescueObstacleCategory)
 def decode_obstacle(val):
-    return RescueResult(val["value"])
+    try:
+        return RescueResult(val["value"])
+    except ValueError:
+        raise ScoreParserError("Invalid result: %s" % val["value"])
 
 @cat_encoder.of(RescueMultiObstacleCategory)
 def encode_multi_obstacle(val):
@@ -26,7 +29,11 @@ def encode_multi_obstacle(val):
 
 @cat_decoder.of(RescueMultiObstacleCategory)
 def decode_multi_obstacle(val):
-    vals = dict((v["value"], v["count"]) for v in val["values"])
+    try:
+        vals = dict((v["value"], int(v["count"])) for v in val["values"])
+    except TypeError:
+        raise ScoreParserError("Invalid result: %s" % val["values"])
+
     return RescueMultiObstacleScore(**vals)
 
 def get_event_data(judging):

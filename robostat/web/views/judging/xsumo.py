@@ -53,7 +53,10 @@ def parse_post_xs(judging, json):
 
     for r in json["rounds"]:
         if "first" in r:
-            first = int(r["first"])
+            first = r["first"]
+            if str(first) not in ("0", "1"):
+                raise ScoreParserError("Invalid first value: %s" % first)
+            first = int(first)
         else:
             first = None
 

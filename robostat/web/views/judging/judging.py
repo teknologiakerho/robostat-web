@@ -107,7 +107,7 @@ class JudgingView(flask.Blueprint):
         )
 
     def render_event_card(self, judging):
-        ruleset = judging.event.get_block(tournament=flask.current_app.tournament).ruleset
+        ruleset = get_block(judging.event).ruleset
 
         try:
             renderer = card_renderer[ruleset]
@@ -140,6 +140,14 @@ class JudgingView(flask.Blueprint):
             request_logger.warning("Failed to validate scores: %s" % str(e))
             request_logger.log_post_body(logging.WARNING)
             return str(e), 400
+
+        if set(s.team_id for s in judging.scores) != set(s[0] for s in scores):
+            request_logger.warning("Received scores for: %s | Expected: %s" % (
+                ",".join(str(s[0]) for s in scores),
+                ",".join(str(s.team_id) for s in judging.scores)
+            ))
+            request_logger.log_post_body(logging.WARNING)
+            return "Invalid team list", 400
 
         # Jos tästä tulee joku sqlalchemy virhe vielä nyt vielä validoinnin
         # ja kaiken jälkeen niin se ei oo virhe pyynnössä vaan bugi,
