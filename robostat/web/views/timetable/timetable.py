@@ -4,6 +4,7 @@ import flask
 import sqlalchemy as sa
 from sqlalchemy.orm import subqueryload
 import robostat.db as model
+from robostat.tournament import hide_query_shadows
 from robostat.ruleset import Ruleset
 from robostat.web.glob import db
 from robostat.web.util import field_injector
@@ -36,6 +37,9 @@ def query_events(**kwargs):
                     .joinedload(model.EventTeam.team, innerjoin=True)
             )
 
+    if kwargs.get("hide_shadows"):
+        query = hide_query_shadows(query)
+
     if "block_ids" in kwargs:
         query = query.filter(model.Event.block_id.in_(kwargs["block_ids"]))
 
@@ -61,6 +65,8 @@ def get_dates():
 
 class TimetableView(flask.Blueprint):
 
+    hide_shadows = True
+
     def __init__(self, name="timetable", import_name=__name__, **kwargs):
         super().__init__(name, import_name, **kwargs)
         self.add_url_rule("/", "index", self.index, methods=("GET", "POST"))
@@ -68,7 +74,7 @@ class TimetableView(flask.Blueprint):
 
     def index(self):
         flt = self.get_filter()
-        event_data = query_events(**flt)
+        event_data = query_events(**flt, hide_shadows=self.hide_shadows)
         return flask.render_template("timetable/timetable.html",
                 event_data=event_data,
                 event_filter=flt,
@@ -76,7 +82,7 @@ class TimetableView(flask.Blueprint):
         )
 
     def search(self):
-        teams = db.query(model.Team).order_by(model.Team.name).all()
+        teams = self.get_teams()
         days = db.query(sa.func.strftime(
             "%s",
             model.Event.ts_sched,
@@ -105,6 +111,15 @@ class TimetableView(flask.Blueprint):
                     map(parse_date, flask.request.values.getlist("day"))]
 
         return flt
+
+    def get_teams(self):
+        query = db.query(model.Team)\
+                .order_by(model.Team.name)
+
+        if self.hide_shadows:
+            query = query.filter_by(is_shadow=False)
+
+        return query.all()
 
     def render_event(self, event):
         tournament = flask.current_app.tournament

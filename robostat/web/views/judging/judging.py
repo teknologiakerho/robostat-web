@@ -3,9 +3,10 @@ import functools
 import logging
 import base64
 import flask
-from sqlalchemy.orm import joinedload, subqueryload
+from sqlalchemy.orm import joinedload, subqueryload, contains_eager
 import robostat.db as model
 from robostat.ruleset import Ruleset, ValidationError
+from robostat.tournament import hide_query_shadows
 from robostat.web.glob import db
 from robostat.web.util import field_injector, get_block
 from robostat.web.login import user, check_login
@@ -42,6 +43,8 @@ def check_json(f):
 
 class JudgingView(flask.Blueprint):
 
+    hide_shadows = True
+
     def __init__(self, name="judging", import_name=__name__, **kwargs):
         super().__init__(name, import_name, **kwargs)
         self.before_request(check_login)
@@ -72,18 +75,22 @@ class JudgingView(flask.Blueprint):
 
     def get_judging_list(self, judge_id, what):
         query = db.query(model.EventJudging)\
-                .filter_by(judge_id=user.id)\
+                .join(model.EventJudging.event)\
+                .filter(model.EventJudging.judge_id==judge_id)\
                 .options(
-                    joinedload(model.EventJudging.event, innerjoin=True)
+                    contains_eager(model.EventJudging.event)
                         .subqueryload(model.Event.teams_part)
                         .joinedload(model.EventTeam.team, innerjoin=True)
                 )
 
+        if self.hide_shadows:
+            query = hide_query_shadows(query)
+
         if what == "future":
-            query = query.filter_by(is_future=True)
+            query = query.filter(model.EventJudging.is_future)
         elif what == "past":
             query = query\
-                    .filter_by(is_future=False)\
+                    .filter(~model.EventJudging.is_future)\
                     .options(subqueryload(model.EventJudging.scores))
 
         ret = query.all()
