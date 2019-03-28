@@ -47,6 +47,7 @@ class XSumo extends Judging {
 
 	init(opt){
 		this.teams = opt.teams;
+		this.allowEmptyFirst = opt.allowEmptyFirst;
 		this.rounds = [];
 
 		this.initUI();
@@ -260,7 +261,7 @@ class XSumoBasicRound extends XSumoRound {
 	}
 
 	verify(){
-		if(this.getFirst() === undefined){
+		if(!this.parent.allowEmptyFirst && this.getFirst() === undefined){
 			setError(this.$elem);
 			return false;
 		}
