@@ -1,4 +1,5 @@
 import collections
+import itertools
 import flask
 import random # testi
 from robostat.util import udict
@@ -38,7 +39,8 @@ def render_xsumo_matrix(events, **kwargs):
         d[s1.team][s2.team] = {"event": ed, "score1": sd1, "score2": sd2}
         d[s2.team][s1.team] = {"event": ed, "score1": sd2, "score2": sd1}
 
-    teams = sorted(d, key=lambda t: t.name)
+    teams = set(itertools.chain.from_iterable(e.teams for e in events))
+    teams = sorted(teams, key=lambda t: t.name)
 
     if len(events) != len(teams) * (len(teams) - 1) / 2:
         raise ValueError("Invalid number of events, expected %d events for %d teams (got %d)" %(
