@@ -72,7 +72,7 @@ class XSumo extends Judging {
 		
 		$(`<button class='plain-input j-xsumo-round-add'><span>+</span></button>`)
 			.appendTo(this.$elem)
-			.on("click", () => this.addRound() && false);
+			.on("click", () => this.addRound() && this.update() && false);
 	}
 
 	initRounds(rounds){
