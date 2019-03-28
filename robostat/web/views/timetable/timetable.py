@@ -107,8 +107,11 @@ class TimetableView(flask.Blueprint):
             flt["team_names"] = flask.request.values.getlist("t")
 
         if "day" in flask.request.values:
-            flt["intervals"] = [(ts,ts+60*60*24) for ts in\
-                    map(parse_date, flask.request.values.getlist("day"))]
+            try:
+                flt["intervals"] = [(ts,ts+60*60*24) for ts in\
+                        map(parse_date, flask.request.values.getlist("day"))]
+            except ValueError:
+                flask.abort(404)
 
         return flt
 
