@@ -10,5 +10,8 @@ setup(
             "robostat3-core",
             "sqlalchemy",
             "flask"
-        ]
+        ],
+        extras_require = {
+            "dev": ["pytest", "pttt"]
+        }
 )
