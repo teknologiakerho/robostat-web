@@ -3,9 +3,14 @@ import itertools
 import flask
 import random # testi
 from robostat.util import udict
+from robostat.tournament import OrderRank
 from robostat.rulesets.xsumo import XSumoRank, XSumoScoreRank, XSumoWinsRank
 from robostat.rulesets.rescue import RescueRank, RescueResult
 from robostat.web.views.ranking import card_renderer
+
+@card_renderer.of(OrderRank)
+def render_order_rank(rank, team, score):
+    return card_renderer[score.rank](rank, team, score.rank)
 
 @card_renderer.of(XSumoRank)
 @card_renderer.of(XSumoScoreRank)
