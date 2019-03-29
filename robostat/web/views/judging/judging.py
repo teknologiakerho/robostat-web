@@ -64,7 +64,6 @@ class JudgingView(flask.Blueprint):
 
         if flask.request.method == "POST":
             try:
-                # TODO flashaa onnistumisen jälkeen että pisteet tallennettiin tjsp
                 return self.save_score_post(judging)
             except:
                 request_logger.exception("Uncaught exception while saving scores")
@@ -166,16 +165,20 @@ class JudgingView(flask.Blueprint):
             judging.event.block_id
         ))
 
-        for team_id, score in scores:
-            request_logger.info("Team (id): %d | Score: %s | Base64: %s" % (
-                team_id,
-                score,
-                base64.b64encode(ruleset.encode(score)).decode("utf8")
-            ))
+        score_info = [(team_id, score, base64.b64encode(ruleset.encode(score)).decode("utf8"))\
+                for team_id, score in scores]
+
+        for si in score_info:
+            request_logger.info("Team (id): %d | Score: %s | Base64: %s" % si)
 
         request_logger.log_post_body(logging.DEBUG)
 
-        return "OK: %s" % str(scores)
+        flask.flash(
+                flask.render_template("judging/score-saved-message.html", score_info=score_info),
+                "success"
+        )
+
+        return "OK: %s" % str(score_info)
 
     def save_scores(self, judging, scores):
         ruleset = get_block(judging.event).ruleset

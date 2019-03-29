@@ -1,0 +1,13 @@
+<i class="fas fa-check"></i>
+Pisteet tallennettiin onnistuneesti!
+<br/>
+<span class="text-meta">
+	{% for team_id, score, b64 in score_info %}
+		{{team_id}} =&gt; {{score}} [{{b64}}]
+		{% if not loop.last %}
+			<br/>
+		{% endif %}
+	{% endfor %}
+</span>
+
+{# vim: set ft=htmldjango: #}

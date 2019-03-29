@@ -26,4 +26,15 @@
 	{{team|team_card|safe}}
 {% endmacro %}
 
+{% macro flash_notify_js() %}
+	{% for type, mes in get_flashed_messages(with_categories=True) %}
+		<script type="text/javascript">
+			notify({{mes|tojson}}, {
+				type: {{type|tojson}},
+				timeout: 10000
+			});
+		</script>
+	{% endfor %}
+{% endmacro %}
+
 {# vim: set ft=htmldjango: #}

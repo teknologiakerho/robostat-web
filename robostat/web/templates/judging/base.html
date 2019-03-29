@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% from "util.html" import active_path %}
+{% from "util.html" import active_path, flash_notify_js %}
 
 {% macro footer_link(href) %}
 	<a href="{{href}}"
@@ -17,6 +17,12 @@
 	{{ super() }}
 	{{ fontawesome() }}
 	{{ static_css("judging.min.css") }}
+{% endblock %}
+
+{% block js %}
+	{{ super() }}
+	{{ static_script("notify.min.js") }}
+	{{ flash_notify_js() }}
 {% endblock %}
 
 {% block body_content %}

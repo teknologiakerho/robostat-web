@@ -14,7 +14,7 @@ STATIC = robostat/web/static
 #DIST = $(STATIC)/dist
 DIST = $(STATIC)
 
-JS = $(addprefix $(DIST)/, judging.min.js ranking.min.js)
+JS = $(addprefix $(DIST)/, judging.min.js ranking.min.js notify.min.js)
 CSS = $(addprefix $(DIST)/, main.min.css login.min.css judging.min.css ranking.min.css\
 	  timetable.min.css)
 
@@ -29,7 +29,7 @@ $(DIST)/%.min.js: js/%.js
 		| $(UGLIFYJS) $(UGLIFYJS_ARGS)\
 		> $@
 
-$(DIST)/main.min.css: css/reset.scss css/common.scss
+$(DIST)/main.min.css: css/reset.scss css/common.scss css/notify.scss
 $(DIST)/judging.min.css: $(wildcard css/judging-*.scss)
 $(DIST)/ranking.min.css: $(wildcard css/ranking-*.scss)
 $(DIST)/%.min.css: css/%.scss css/config.scss

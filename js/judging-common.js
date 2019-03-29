@@ -3,7 +3,8 @@ function postScores(url, data, redirect){
 		method: "POST",
 		data: JSON.stringify(data),
 		contentType: "application/json",
-		error: () => flash("post failas", "error"),
+		error: (xhr,_,error) => notify(
+			`Virhe pisteiden tallennuksessa: ${error}<br/>${xhr.responseText}`, {type:"error"}),
 		success: () => {
 			window.location.href = redirect;
 		}
