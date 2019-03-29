@@ -1,0 +1,56 @@
+{% import "ranking/util.html" as u %}
+
+{% macro wincount() %}
+	<div class="r-xsumo-rank-score">
+		<span class="r-text-win">
+			{{score.wins}}
+		</span>
+		/
+		<span class="r-text-tie">
+			{{score.ties}}
+		</span>
+		/
+		<span class="r-text-lose">
+			{{score.losses}}
+		</span>
+	</div>
+{% endmacro %}
+
+{% if score.played == 0 %}
+	{% extends "ranking/ranking-card-unranked.html" %}
+{% else %}
+	{% extends "ranking/ranking-card.html" %}
+{% endif %}
+
+{% block score %}
+	{% if rank == 1 %}
+		{{ wincount() }}
+		<table class="r-rank-details-table">
+			<tr>
+				<td class="r-border-score">Pisteet</td>
+				<td class="r-border-future">Pelaamatta</td>
+			</tr>
+			<tr>
+				<td>{{score.score}}p</td>
+				<td>{{score.unplayed}}</td>
+			</tr>
+		</table>
+	{% else %}
+		<div class="flex-stack-responsive r-xsumo-rank">
+			{{ wincount() }}
+			<div class="r-xsumo-rank-details-compact">
+				{{ u.bar_parts(
+					(score.wins, "r-win"),
+					(score.ties, "r-tie"),
+					(score.losses, "r-lose"),
+					(score.unplayed, "r-future")
+				) }}
+				<br/>
+				<span class="r-text-score">{{score.score}}p</span> /
+				<span class="r-text-future">{{score.unplayed}}</span>
+			</div>
+		</div>
+	{% endif %}
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

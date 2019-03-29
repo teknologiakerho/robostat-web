@@ -2,8 +2,14 @@ $color-win: #7CB342; //#CDDC39;
 $color-lose: #F44336;
 $color-tie: #F9A825;//#FFEB3B;
 $color-future: #999999;
+$color-score: #333;
 
-@each $name, $color in win $color-win, lose $color-lose, tie $color-tie, future $color-future {
+@each $name, $color in win $color-win,
+	lose $color-lose,
+	tie $color-tie,
+	future $color-future,
+	score $color-score {
+
 	/* css variablet kävis tähän hyvin */
 	.r-#{$name} {
 		background: $color;
