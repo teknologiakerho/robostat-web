@@ -36,17 +36,31 @@ class UserSessionProxy:
         self.id = id
         self.name = name
 
+    def auth_admin(self):
+        self.admin = True
+
     def logout(self):
         del self.id
         del self.name
 
+    def deauth_admin(self):
+        del self.admin
+
 user = UserSessionProxy()
 
+class UnauthorizedError(Exception):
+
+    def __init__(self, need_admin=False):
+        super().__init__("Unauthorized")
+        self.need_admin = need_admin
+
 def check_login():
-    user.logged_in or flask.abort(401)
+    if not user.logged_in:
+        raise UnauthorizedError(need_admin=False)
 
 def check_admin():
-    user.is_admin or flask.abort(401)
+    if not user.is_admin:
+        return UnauthorizedError(need_admin=True)
 
 def require_login(f):
     @functools.wraps(f)

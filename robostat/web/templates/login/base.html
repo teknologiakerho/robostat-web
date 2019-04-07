@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block css %}
+	{{ super() }}
+	{{ static_css("login.min.css") }}
+{% endblock %}
+
+{% block title %}
+	Tunnistautuminen - RoboStat
+{% endblock %}
+
+{% block body_content %}
+	<form method="POST">
+		<div class="login-container">
+			{% block header %}
+				<h3>Kirjaudu sisään</h3>
+			{% endblock %}
+
+			{% block desc %}
+				<span class="text-meta">
+					Sinun on kirjauduttava sisään
+				</span>
+			{% endblock %}
+
+			{% if error %}
+				<div class="message message-error login-message">
+					<strong>Virhe:</strong> {{error}}
+				</div>
+			{% endif %}
+
+			{% block inputs %}
+				<input type="password"
+					   autocomplete="off"
+					   name="key"
+					   class="plain-input login-key"
+					   autofocus />
+
+				<input type="submit"
+					   value="Kirjaudu"
+					   class="action-button primary-button login-submit" />
+			{% endblock %}
+		</div>
+	</form>
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}
