@@ -5,7 +5,7 @@ from robostat.rulesets.rescue import RescueRuleset, RescueObstacleCategory,\
 from robostat.web.views.judging import JudgingView
 from robostat.web.views.judging.xsumo import parse_post_xs
 from robostat.web.views.judging.rescue import parse_post as parse_post_r
-from .helpers import data, as_user
+from .helpers import data, as_judge, as_admin
 
 @pytest.fixture
 def app(init_app):
@@ -99,10 +99,16 @@ rescue_data = data(lambda: [
 ])
 
 @rescue_data
-@as_user("a")
+@as_judge("a")
 def test_auth(app, client):
     assert client.get("/judging/scoring/1").status_code == 200
     assert client.get("/judging/scoring/2").status_code == 404
+
+@rescue_data
+@as_admin("password")
+def test_as_judge(app, client):
+    assert client.get("/judging/scoring/1?as=1").status_code == 200
+    assert client.get("/judging/scoring/2?as=1").status_code == 404
 
 def check_xsumo_parsed_scores(json, s1, s2):
     assert len(s1.rounds) == len(json["rounds"])
@@ -134,7 +140,7 @@ def check_xsumo_parsed_scores(json, s1, s2):
     *XSsym(1, 2, {"first": 0, "result": 1}, {"first": 0, "result": 0})
 ])
 @xsumo_single_data
-@as_user("a")
+@as_judge("a")
 def test_xsumo_valid_request(app, client, json):
     with client:
         assert client.post("/judging/scoring/1", json=json).status_code == 200
@@ -161,7 +167,7 @@ def test_xsumo_valid_request(app, client, json):
     XS(1, 2, {"result": "tie"})
 ])
 @xsumo_single_data
-@as_user("a")
+@as_judge("a")
 def test_xsumo_invalid_request(app, client, json):
     assert client.post("/judging/scoring/1", json=json).status_code == 400
 
@@ -173,7 +179,7 @@ def test_xsumo_invalid_request(app, client, json):
     (R1({"viiva_punainen": "S", "viiva_palat": (1, 2, 3), "time": (10, 0)}), 40, 600)
 ])
 @rescue_data
-@as_user("a")
+@as_judge("a")
 def test_rescue_valid_request(app, client, json, score, time):
     with client:
         assert client.post("/judging/scoring/1", json=json).status_code == 200
@@ -197,12 +203,12 @@ def test_rescue_valid_request(app, client, json, score, time):
     R1({"viiva_palat": (1, 2, None)}),
 ])
 @rescue_data
-@as_user("a")
+@as_judge("a")
 def test_xsumo_invalid_request(app, client, json):
     assert client.post("/judging/scoring/1", json=json).status_code == 400
 
 @rescue_data
-@as_user("a")
+@as_judge("a")
 def test_xsumo_invalid_request2(app, client):
     # Puuttuva kategoria
     json = R1({})
@@ -210,7 +216,7 @@ def test_xsumo_invalid_request2(app, client):
     assert client.post("/judging/scoring/1", json=json).status_code == 400
 
 @xsumo_single_data
-@as_user("a")
+@as_judge("a")
 def test_past_future(app, client):
     assert b"/judging/scoring/1" in client.get("/judging/list/future").data
     assert b"/judging/scoring/1" not in client.get("/judging/list/past").data

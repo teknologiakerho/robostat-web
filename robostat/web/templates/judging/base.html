@@ -30,11 +30,15 @@
 
 		<div class="j-header">
 			<div class="j-header-content">
-				Olet tuomari: 
-				<strong>{{user.name}}</strong>
-				<a class="j-header-logout" href="{{url_for('login.logout')}}">
-					Kirjaudu ulos
-				</a>
+				{% if is_real_user %}
+					Olet tuomari: 
+					<strong>{{judging_user.name}}</strong>
+					<a class="j-header-logout" href="{{url_for('login.logout')}}">
+						Kirjaudu ulos
+					</a>
+				{% else %}
+					Olet ylläpitäjä ja esiinnyt tuomarina: <strong>{{judging_user.name}}</strong>
+				{% endif %}
 			</div>
 		</div>
 

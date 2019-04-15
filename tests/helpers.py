@@ -63,25 +63,36 @@ def data(d, app_keyword="app"):
         return wrapper
     return ret
 
-def login(client, key):
-    return client.post("/login", data={"key": key})
+class LoginHandler:
 
-def logout(client):
-    return client.post("/logout")
+    def __init__(self, login_url, logout_url):
+        self.login_url = login_url
+        self.logout_url = logout_url
 
-@contextlib.contextmanager
-def user_session(client, key):
-    login(client, key)
-    try:
-        yield
-    finally:
-        logout(client)
+    def login(self, client, key):
+        return client.post(self.login_url, data={"key": key})
 
-def as_user(key, client_keyword="client"):
-    def ret(f):
-        @functools.wraps(f)
-        def wrapper(*args, **kwargs):
-            with user_session(kwargs[client_keyword], key):
-                return f(*args, **kwargs)
-        return wrapper
-    return ret
+    def logout(self, client):
+        return client.post(self.logout_url)
+
+    @contextlib.contextmanager
+    def session(self, client, key):
+        self.login(client, key)
+        try:
+            yield
+        finally:
+            self.logout(client)
+
+    def as_auth(self, key, client_keyword="client"):
+        def ret(f):
+            @functools.wraps(f)
+            def wrapper(*args, **kwargs):
+                with self.session(kwargs[client_keyword], key):
+                    return f(*args, **kwargs)
+            return wrapper
+        return ret
+
+judge_handler = LoginHandler("/auth/judge", "/auth/logout")
+admin_handler = LoginHandler("/auth/admin", "/auth/unadmin")
+as_judge = judge_handler.as_auth
+as_admin = admin_handler.as_auth

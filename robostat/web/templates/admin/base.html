@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% from "util.html" import active_path, flash_notify_js %}
+
+{% macro navbar_link(href) %}
+	<a href="{{href}}"
+	   class="a-navbar-link {% call active_path(href) %}a-navbar-active{% endcall %}">
+		{{ caller() }}
+	</a>
+{% endmacro %}
+
+{% block title %}
+	Ylläpito - Robostat
+{% endblock %}
+
+{% block css %}
+	{{ super() }}
+	{{ fontawesome() }}
+	{{ static_css("admin.min.css") }}
+{% endblock %}
+
+{% block js %}
+	{{ super() }}
+	{{ static_script("lib/jquery.min.js") }}
+	{{ static_script("admin.min.js") }}
+	{{ static_script("notify.min.js") }}
+	{{ flash_notify_js() }}
+{% endblock %}
+
+{% block body_content %}
+	<div class="a-navbar">
+		{% block nav %}
+			{% call navbar_link(url_for('.dashboard')) %}
+				<i class="fas fa-th"></i> Yleiskatsaus
+			{% endcall %}
+			{% call navbar_link(url_for('.database')) %}
+				<i class="fas fa-database"></i> Tietokanta
+			{% endcall %}
+			{% call navbar_link(url_for('.debug')) %}
+				<i class="fas fa-bug"></i> Debug
+			{% endcall %}
+		{% endblock %}
+	</div>
+
+	<div class="a-page-container">
+		{% block body %}
+		{% endblock %}
+	</div>
+
+	<div class="a-footer">
+		{% block footer %}
+		{% endblock %}
+	</div>
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

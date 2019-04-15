@@ -1,0 +1,119 @@
+{% extends "admin/base.html" %}
+
+{% block body %}
+	<div class="a-sections">
+
+		<div class="a-section a-responsive">
+			<h4 class="a-section-header">
+				Toimenpiteet
+			</h4>
+
+			<table class="a-table">
+				<tr>
+					<td>
+						<i class="fas fa-sign-in-alt"></i>
+						<a href="{{url_for('login.judge', return_to=url_for('.index'))}}">
+							Kirjaudu tuomarina
+						</a>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<i class="fas fa-sign-out-alt"></i>
+						{% if user.logged_in %}
+							<a href="{{url_for('login.logout')}}">
+								Kirjaudu ulos
+							</a>
+							(Olet tuomari: {{user.name}} <span class="a-id">[{{user.id}}]</span>)
+						{% else %}
+							Kirjaudu ulos
+							(Et ole kirjautunut tuomarina)
+						{% endif %}
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<i class="far fa-times-circle"></i>
+						<a href="{{url_for('login.unadmin')}}">
+							Poistu ylläpidosta
+						</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="a-section a-responsive">
+			<h4 class="a-section-header">
+				Lohkot
+			</h4>
+
+			<table class="a-table">
+				<tr>
+					<th>Id</th>
+					<th>Nimi</th>
+					<th>Tuomarointi</th>
+				</tr>
+
+				{% for id, b in blocks|sort(attribute="0") %}
+					<tr {% if not b.block %} class="a-dash-missing-block"
+						{% elif b.j==b.j_max %} class="a-done"
+						{% endif %}
+						>
+						<td class="a-id a-dash-block-id">
+							{{id}}
+						</td>
+						<td>
+							{% if b.block %}
+								<a href="{{url_for('.block', id=id)}}">
+									{{b.block.name}}
+								</a>
+							{% endif %}
+						</td>
+						{% if b.j_max %}
+							<td>
+								{{b.j}} / {{b.j_max}}
+							</td>
+						{% else %}
+							<td class="a-dash-block-judgings-none">
+								Ei tuomarointeja
+							</td>
+						{% endif %}
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+
+		<div class="a-section a-responsive">
+			<h4 class="a-section-header">
+				Lajittelijat
+			</h4>
+
+			<table class="a-table">
+				<tr>
+					<th>Id</th>
+					<th>Nimi</th>
+					<th>Web<th>
+				</tr>
+
+				{% for id, r in rankings|sort(attribute="0") %}
+					<tr>
+						<td class="a-id">{{id}}</td>
+						<td>
+							{{r.name}}
+						</td>
+						<td>
+							{% if ranking_endpoint %}
+								{% set url = url_for(ranking_endpoint, id=id) %}
+								<a href="{{url}}">{{url}}</a>
+							{% endif %}
+						</td>
+				{% endfor %}
+			</table>
+		</div>
+
+	</div>
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

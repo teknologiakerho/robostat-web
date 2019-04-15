@@ -1,0 +1,39 @@
+{% extends "admin/base.html" %}
+
+{% block body %}
+	<div class="a-sections">
+
+		<div class="a-section a-full">
+			<h3>{{block.name}} <span class="a-id">[{{block.id}}]</span></h3>
+		</div>
+
+		<div id="events" class="a-section a-full">
+		</div>
+
+	</div>
+{% endblock %}
+
+{% block css %}
+	{{ super() }}
+	{{ static_css("lib/selectize.min.css") }}
+	{{ static_css("lib/jquery.contextMenu.min.css") }}
+{% endblock %}
+
+{% block js %}
+	{{ super() }}
+	{{ static_script("lib/moment.min.js") }}
+	{{ static_script("lib/selectize.min.js") }}
+	{{ static_script("lib/jquery.ui.position.min.js") }}
+	{{ static_script("lib/jquery.contextMenu.min.js") }}
+	<script type="text/javascript">
+		admin.blockEditor("#events", {
+			{% if scoring_endpoint %}
+				scoringEndpoint: "{{url_for(scoring_endpoint)}}",
+			{% endif %}
+			block: "{{block.id}}",
+			api: "{{url_for(api)}}"
+		});
+	</script>
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

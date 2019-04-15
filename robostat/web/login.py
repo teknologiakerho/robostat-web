@@ -60,7 +60,7 @@ def check_login():
 
 def check_admin():
     if not user.is_admin:
-        return UnauthorizedError(need_admin=True)
+        raise UnauthorizedError(need_admin=True)
 
 def require_login(f):
     @functools.wraps(f)

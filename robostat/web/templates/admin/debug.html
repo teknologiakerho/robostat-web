@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+
+{% block body %}
+	<div class="a-sections">
+
+		<div class="a-section">
+			<h3>
+				Debug-tiedot
+			</h3>
+
+			<table class="a-table">
+				{% for k,v in debug %}
+					<tr>
+						<td><strong>{{k}}</strong></td>
+						<td><code>{{v}}</code></td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+
+	</div>
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}

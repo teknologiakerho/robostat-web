@@ -13,7 +13,8 @@
 	{{ static_script("judging.min.js") }}
 	<script type="text/javascript">
 		judging.submit("#j-submit", {
-			postUrl: "{{url_for('.scoring', id=judging.event_id)}}",
+			{# postUrl: "{{url_for('.scoring', id=judging.event_id)}}", #}
+			postUrl: "{{request.url}}",
 			returnUrl: "{{url_for('.list', what=judging.is_future and 'future' or 'past')}}"
 		});
 	</script>

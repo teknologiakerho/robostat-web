@@ -9,7 +9,7 @@ from robostat.ruleset import Ruleset, ValidationError
 from robostat.tournament import hide_query_shadows
 from robostat.web.glob import db
 from robostat.web.util import field_injector, get_block
-from robostat.web.login import user, check_login
+from robostat.web.login import user, UnauthorizedError
 from robostat.web.logging import request_logger
 
 card_renderer = field_injector("__web_event_card_renderer__")
@@ -47,20 +47,23 @@ class JudgingView(flask.Blueprint):
 
     def __init__(self, name="judging", import_name=__name__, **kwargs):
         super().__init__(name, import_name, **kwargs)
-        self.before_request(check_login)
+        self.before_request(self.set_user_id)
+        self.context_processor(self.template_context)
         self.add_url_rule("/", "index", self.index)
         self.add_url_rule("/list/<what>", "list", self.list)
+        # XXX: Tää viritys siks että javascriptissä saa tehtyä scoring urleja
+        self.add_url_rule("/scoring", "scoring_root")
         self.add_url_rule("/scoring/<int:id>", "scoring", self.scoring, methods=("GET", "POST"))
 
     def index(self):
         return flask.redirect(flask.url_for(".list", what="future"))
 
     def list(self, what):
-        judgings = self.get_judging_list(user.id, what)
+        judgings = self.get_judging_list(self.judging_user.id, what)
         return self.render_judging_list(judgings)
 
     def scoring(self, id):
-        judging = self.get_judging(user.id, id) or flask.abort(404)
+        judging = self.get_judging(self.judging_user.id, id) or flask.abort(404)
 
         if flask.request.method == "POST":
             try:
@@ -71,6 +74,32 @@ class JudgingView(flask.Blueprint):
                 raise
 
         return self.render_scoring_form(judging)
+
+    def set_user_id(self):
+        if user.is_admin and "as" in flask.request.values:
+            flask.g.judging_user = db.query(model.Judge)\
+                    .filter_by(id=flask.request.values.get("as", type=int))\
+                    .first() or flask.abort(400)
+            flask.g.judging_is_real_user = False
+        elif user.logged_in:
+            flask.g.judging_user = user
+            flask.g.judging_is_real_user = True
+        else:
+            raise UnauthorizedError()
+
+    @property
+    def judging_user(self):
+        return flask.g.judging_user
+
+    @property
+    def is_real_user(self):
+        return flask.g.judging_is_real_user
+
+    def template_context(self):
+        return {
+            "judging_user": self.judging_user,
+            "is_real_user": self.is_real_user
+        }
 
     def get_judging_list(self, judge_id, what):
         query = db.query(model.EventJudging)\
