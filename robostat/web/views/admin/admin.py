@@ -10,24 +10,23 @@ from robostat.util import lazy
 from robostat.web.glob import db
 from robostat.web.login import check_admin
 
-class AdminView(flask.Blueprint):
+class AdminView:
 
-    def __init__(self, api_blueprint, judging_blueprint=None, ranking_blueprint=None,
-            name="admin", import_name=__name__, **kwargs):
-
-        super().__init__(name, import_name, **kwargs)
-
+    def __init__(self, api_blueprint, judging_blueprint=None, ranking_blueprint=None):
         self._api_prefix = api_blueprint.name
         self._judging_prefix = judging_blueprint.name if judging_blueprint is not None else None
         self._ranking_prefix = ranking_blueprint.name if ranking_blueprint is not None else None
 
-        self.before_request(check_admin)
-        self.add_url_rule("/", "index", self.index)
-        self.add_url_rule("/dashboard", "dashboard", self.dashboard)
-        self.add_url_rule("/database", "database", self.database)
-        self.add_url_rule("/timetables", "timetables", self.timetables)
-        self.add_url_rule("/debug", "debug", self.debug)
-        self.add_url_rule("/block/<id>", "block", self.block)
+    def create_blueprint(self, name="admin", import_name=__name__, **kwargs):
+        b = flask.Blueprint(name, import_name, **kwargs)
+        b.before_request(check_admin)
+        b.add_url_rule("/", "index", self.index)
+        b.add_url_rule("/dashboard", "dashboard", self.dashboard)
+        b.add_url_rule("/database", "database", self.database)
+        b.add_url_rule("/timetables", "timetables", self.timetables)
+        b.add_url_rule("/debug", "debug", self.debug)
+        b.add_url_rule("/block/<id>", "block", self.block)
+        return b
 
     def index(self):
         return flask.redirect(flask.url_for(".dashboard"))

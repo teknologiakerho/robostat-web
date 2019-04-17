@@ -3,17 +3,22 @@ import robostat.db as model
 from robostat.web.glob import db
 from robostat.web.login import user
 
-class LoginView(flask.Blueprint):
+class LoginView:
 
-    def __init__(self, name="login", import_name=__name__, admin_password=None, **kwargs):
-        super().__init__(name, import_name, **kwargs)
-        self.add_url_rule("/judge", "judge", self.login, methods=["GET", "POST"])
-        self.add_url_rule("/logout", "logout", self.logout, methods=["GET", "POST"])
+    def __init__(self, admin_password=None):
+        self.admin_password = admin_password
 
-        if admin_password:
-            self.admin_password = admin_password
-            self.add_url_rule("/admin", "admin", self.admin, methods=["GET", "POST"])
-            self.add_url_rule("/unadmin", "unadmin", self.unadmin, methods=["GET", "POST"])
+    def create_blueprint(self, name="login", import_name=__name__, **kwargs):
+        b = flask.Blueprint(name, import_name, **kwargs)
+
+        b.add_url_rule("/judge", "judge", self.login, methods=["GET", "POST"])
+        b.add_url_rule("/logout", "logout", self.logout, methods=["GET", "POST"])
+
+        if self.admin_password:
+            b.add_url_rule("/admin", "admin", self.admin, methods=["GET", "POST"])
+            b.add_url_rule("/unadmin", "unadmin", self.unadmin, methods=["GET", "POST"])
+
+        return b
 
     def login(self):
         if flask.request.method == "POST":

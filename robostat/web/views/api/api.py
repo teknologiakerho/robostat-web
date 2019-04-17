@@ -27,15 +27,16 @@ class ApiError(Exception):
         super().__init__(mes)
         self.code = code
 
-class ApiView(flask.Blueprint):
+class ApiView:
 
     _default_routes = []
 
-    def __init__(self, name="api", import_name=__name__, **kwargs):
-        super().__init__(name, import_name, **kwargs)
-        self.register_error_handler(ApiError, self.handle_api_error)
-        self.add_url_rule("/", "index", self.index)
-        self.record(self._register_defaults)
+    def create_blueprint(self, name="api", import_name=__name__, **kwargs):
+        b = flask.Blueprint(name, import_name, **kwargs)
+        b.register_error_handler(ApiError, self.handle_api_error)
+        b.add_url_rule("/", "index", self.index)
+        b.record(self._register_defaults)
+        return b
 
     def index(self):
         return ""

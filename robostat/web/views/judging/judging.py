@@ -41,19 +41,20 @@ def check_json(f):
         return f(*args, **kwargs, json=json)
     return ret
 
-class JudgingView(flask.Blueprint):
+class JudgingView:
 
     hide_shadows = True
 
-    def __init__(self, name="judging", import_name=__name__, **kwargs):
-        super().__init__(name, import_name, **kwargs)
-        self.before_request(self.set_user_id)
-        self.context_processor(self.template_context)
-        self.add_url_rule("/", "index", self.index)
-        self.add_url_rule("/list/<what>", "list", self.list)
+    def create_blueprint(self, name="judging", import_name=__name__, **kwargs):
+        b = flask.Blueprint(name, import_name, **kwargs)
+        b.before_request(self.set_user_id)
+        b.context_processor(self.template_context)
+        b.add_url_rule("/", "index", self.index)
+        b.add_url_rule("/list/<what>", "list", self.list)
         # XXX: Tää viritys siks että javascriptissä saa tehtyä scoring urleja
-        self.add_url_rule("/scoring", "scoring_root")
-        self.add_url_rule("/scoring/<int:id>", "scoring", self.scoring, methods=("GET", "POST"))
+        b.add_url_rule("/scoring", "scoring_root")
+        b.add_url_rule("/scoring/<int:id>", "scoring", self.scoring, methods=("GET", "POST"))
+        return b
 
     def index(self):
         return flask.redirect(flask.url_for(".list", what="future"))

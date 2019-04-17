@@ -37,13 +37,14 @@ def make_block_renderer(block, renderer=render_default_block):
         return renderer(events=events, **kwargs)
     return ret
 
-class RankingView(flask.Blueprint):
+class RankingView:
 
-    def __init__(self, name="ranking", import_name=__name__, **kwargs):
-        super().__init__(name, import_name, **kwargs)
-        self.add_url_rule("/", "index", self.index)
-        self.add_url_rule("/<id>/", "ranking", self.ranking)
-        self.add_url_rule("/<id>/details", "details", self.details)
+    def create_blueprint(self, name="ranking", import_name=__name__, **kwargs):
+        b = flask.Blueprint(name, import_name, **kwargs)
+        b.add_url_rule("/", "index", self.index)
+        b.add_url_rule("/<id>/", "ranking", self.ranking)
+        b.add_url_rule("/<id>/details", "details", self.details)
+        return b
 
     def index(self):
         return ""

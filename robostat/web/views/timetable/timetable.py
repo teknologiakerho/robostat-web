@@ -63,14 +63,15 @@ def get_dates():
 
     min_ts, max_ts = query.first()
 
-class TimetableView(flask.Blueprint):
+class TimetableView:
 
     hide_shadows = True
 
-    def __init__(self, name="timetable", import_name=__name__, **kwargs):
-        super().__init__(name, import_name, **kwargs)
-        self.add_url_rule("/", "index", self.index, methods=("GET", "POST"))
-        self.add_url_rule("/search", "search", self.search)
+    def create_blueprint(self, name="timetable", import_name=__name__, **kwargs):
+        b = flask.Blueprint(name, import_name, **kwargs)
+        b.add_url_rule("/", "index", self.index, methods=("GET", "POST"))
+        b.add_url_rule("/search", "search", self.search)
+        return b
 
     def index(self):
         flt = self.get_filter()

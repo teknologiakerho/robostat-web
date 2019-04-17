@@ -19,7 +19,8 @@ def tournament():
 
 @pytest.fixture
 def init_app(tournament):
-    ret = RobostatWeb("test", tournament=tournament, admin_password="password")
+    ret = RobostatWeb("test", tournament=tournament)
+    ret.setup_login("password")
     ret.configure_db("sqlite://")#, engine_args={"echo": "debug"})
     engine = ret.db.get_bind()
     model.Base.metadata.create_all(engine)

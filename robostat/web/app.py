@@ -17,12 +17,12 @@ class RobostatWeb(flask.Flask):
         self.db = None
         self.tournament = tournament or robostat.default_tournament
 
-    def setup_login(self, admin_password=None):
-        self.register_blueprint(self.create_login_blueprint(admin_password), url_prefix="/auth")
-
-    def create_login_blueprint(self, admin_password):
+    def setup_login(self, admin_password=None, prefix="/auth"):
         from robostat.web.views.login import LoginView
-        return LoginView(admin_password=admin_password)
+        self.register_blueprint(
+                LoginView(admin_password=admin_password).create_blueprint(),
+                url_prefix=prefix
+        )
 
     def configure_db(self, url, engine_args={},
             session_args={"autocommit": False, "autoflush": False}):
@@ -96,10 +96,10 @@ def create_app(config_pyfile=None, config_envvar="ROBOSTAT_CONFIG",
     from robostat.web.views.timetable import TimetableView
     from robostat.web.views.api import ApiView
 
-    judging = JudgingView()
-    ranking = RankingView()
-    timetable = TimetableView()
-    api = ApiView()
+    judging = JudgingView().create_blueprint()
+    ranking = RankingView().create_blueprint()
+    timetable = TimetableView().create_blueprint()
+    api = ApiView().create_blueprint()
 
     app.register_blueprint(judging, url_prefix="/judging")
     app.register_blueprint(ranking, url_prefix="/ranking")
@@ -112,7 +112,7 @@ def create_app(config_pyfile=None, config_envvar="ROBOSTAT_CONFIG",
                 api_blueprint=api,
                 judging_blueprint=judging,
                 ranking_blueprint=ranking
-        )
+        ).create_blueprint()
 
         app.register_blueprint(admin, url_prefix="/admin")
 

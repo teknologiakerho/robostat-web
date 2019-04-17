@@ -9,7 +9,7 @@ from .helpers import data, as_judge, as_admin
 
 @pytest.fixture
 def app(init_app):
-    init_app.register_blueprint(JudgingView(), url_prefix="/judging")
+    init_app.register_blueprint(JudgingView().create_blueprint(), url_prefix="/judging")
     return init_app
 
 def XS(t1, t2, *rounds):

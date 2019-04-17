@@ -8,9 +8,14 @@ class TimetableShadows(TimetableView):
 
 @pytest.fixture
 def app(init_app):
-    init_app.register_blueprint(TimetableView(name="timetable"), url_prefix="/timetable")
-    init_app.register_blueprint(TimetableShadows("timetableshadows"),
-            url_prefix="/timetable-shadows")
+    init_app.register_blueprint(
+            TimetableView().create_blueprint(name="timetable"),
+            url_prefix="/timetable"
+    )
+    init_app.register_blueprint(
+            TimetableShadows().create_blueprint(name="timetableshadows"),
+            url_prefix="/timetable-shadows"
+    )
     return init_app
 
 timetable_data = data(lambda: [
