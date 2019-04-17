@@ -24,7 +24,7 @@ class RobostatWeb(flask.Flask):
                 url_prefix=prefix
         )
 
-    def configure_db(self, url, engine_args={},
+    def setup_db(self, url, engine_args={},
             session_args={"autocommit": False, "autoflush": False}):
 
         logger.debug("Connecting db: %s %s" % (url, str(engine_args)))
@@ -80,7 +80,7 @@ def create_app(config_pyfile=None, config_envvar="ROBOSTAT_CONFIG",
     if db_url is None:
         raise ValueError("No database url given")
 
-    app.configure_db(db_url)
+    app.setup_db(db_url)
 
     if "ROBOSTAT_LOGFILE" in app.config:
         import logging
