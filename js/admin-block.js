@@ -57,6 +57,16 @@ class BlockEditorComponent extends EditorComponent {
 					}
 				},
 				"s": "---",
+				"reset-judging": {
+					name: "Pyyhi tuomarointi",
+					icon: "fas fa-history",
+					callback: (_, opt) => {
+						const id = getEnclosingEvent(opt.$trigger);
+						const jid = opt.$trigger.closest("[data-type='judge']").attr("data-value");
+						this.dispatchEvent(new CustomEvent("reset-judging", {detail: {id, jid}}));
+					}
+				},
+				"ss": "---",
 				...editItems
 			}
 		});
@@ -289,6 +299,10 @@ class BlockEditor {
 				window.open(url, "_blank");
 			});
 		}
+
+		this.view.addEventListener("reset-judging", ({ detail }) => {
+			tryAwait(this.resetJudging(detail.id, detail.jid));
+		});
 	}
 
 	async createEvent(){
@@ -415,6 +429,19 @@ class BlockEditor {
 		this.view.delete(id);
 
 		notify("Suoritus poistettu", {
+			type: "success",
+			timeout: 5000
+		});
+	}
+
+	async resetJudging(eventId, judgeId){
+		await this.client.request(`/judgings/${eventId}/${judgeId}/reset`, "", {
+			method: "POST"
+		});
+
+		await this.loadScores([eventId]);
+
+		notify("Tuomarointi pyyhitty", {
 			type: "success",
 			timeout: 5000
 		});

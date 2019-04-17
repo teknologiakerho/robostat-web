@@ -174,6 +174,27 @@ def delete_event(id):
 
     return {"status": "OK"}
 
+@default_api("/judgings/<event_id>/<judge_id>/reset", methods=["POST"])
+@json_view
+@require_admin
+def reset_judging(event_id, judge_id):
+    judging = db.query(model.EventJudging)\
+            .filter_by(event_id=event_id, judge_id=judge_id)\
+            .options(joinedload(model.EventJudging.scores, innerjoin=True))\
+            .first()
+
+    if judging is None:
+        raise ApiError("Judging doesn't exist", code=404)
+
+    judging.ts = None
+
+    for s in judging.scores:
+        s.data = None
+
+    commit()
+
+    return {"status": "OK"}
+
 @default_api("/teams/<id>/update", methods=["POST"])
 @admin_api
 def update_team(id, json):
