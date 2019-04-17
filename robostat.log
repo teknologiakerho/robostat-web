@@ -1,6 +1,0 @@
-2019-04-18 01:41:41,931 INFO robostat.web [127.0.0.1 POST /judging/scoring/129?as=2] Saved scores [event=129 in block b1]
-2019-04-18 01:41:41,931 INFO robostat.web [127.0.0.1 POST /judging/scoring/129?as=2] Team (id): 59 | Score: W|1+3 | Base64: VwEBVw==
-2019-04-18 01:41:41,932 INFO robostat.web [127.0.0.1 POST /judging/scoring/129?as=2] Team (id): 21 | Score: L|0+0 | Base64: TAEATA==
-2019-04-18 01:45:01,450 INFO robostat.web [127.0.0.1 POST /judging/scoring/129?as=2] Saved scores [event=129 in block b1]
-2019-04-18 01:45:01,451 INFO robostat.web [127.0.0.1 POST /judging/scoring/129?as=2] Team (id): 59 | Score: W|1+3 | Base64: VwEBVw==
-2019-04-18 01:45:01,451 INFO robostat.web [127.0.0.1 POST /judging/scoring/129?as=2] Team (id): 21 | Score: L|0+0 | Base64: TAEATA==
