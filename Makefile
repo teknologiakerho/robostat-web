@@ -21,7 +21,7 @@ CSS = $(addprefix $(DIST)/, main.min.css login.min.css judging.min.css ranking.m
 default: | $(DIST)
 default: $(JS) $(CSS)
 
-$(DIST)/admin.min.js: $(wildcard js/admin-*.js)
+$(DIST)/admin.min.js: js/admin.js $(wildcard js/admin-*.js)
 	$(ROLLUP) $(ROLLUP_ARGS) -f iife -n admin $<\
 		| $(UGLIFYJS) $(UGLIFYJS_ARGS)\
 		> $@
