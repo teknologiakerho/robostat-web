@@ -4,6 +4,7 @@ from sqlalchemy.orm import selectinload, joinedload
 import robostat.db as model
 from robostat.util import enumerate_rank
 from robostat.web.glob import db
+from robostat.web.login import check_admin
 from robostat.web.util import get_ranking, get_block
 from robostat.web.views.api import default_api, jsonify, json_view
 
@@ -40,12 +41,30 @@ def filter_events(query, params):
 @default_api("/teams")
 @json_view
 def teams():
-    return list(map(jsonify, db.query(model.Team).all()))
+    query = db.query(model.Team)
+
+    if "include_shadows" in flask.request.values:
+        return [{
+            **jsonify(t),
+            "shadow": bool(t.is_shadow)
+        } for t in query.all()]
+
+    query = query.filter_by(is_shadow=False)
+    return list(map(jsonify, query.all()))
 
 @default_api("/judges")
 @json_view
 def judges():
-    return list(map(jsonify, db.query(model.Judge).all()))
+    judges = db.query(model.Judge).all()
+
+    if "with_keys" in flask.request.values:
+        check_admin()
+        return [{
+            **jsonify(j),
+            "key": j.key
+        } for j in judges]
+
+    return list(map(jsonify, judges))
 
 @default_api("/ranking/<id>")
 @json_view

@@ -6,10 +6,7 @@ import robostat.db as model
 from robostat.web.glob import db
 from robostat.web.login import check_admin, UnauthorizedError
 from robostat.web.logging import request_logger
-from robostat.web.views.api import default_api, jsonify, json_view
-
-def error(x):
-    return {"error": x}
+from robostat.web.views.api import ApiError, default_api, jsonify, json_view
 
 def auto_key_error(f):
     @functools.wraps(f)
@@ -17,7 +14,7 @@ def auto_key_error(f):
         try:
             return f(*args, **kwargs)
         except KeyError as e:
-            return error("Missing field: %s" % str(e)), 400
+            raise ApiError("Missing field: %s" % str(e))
     return wrapper
 
 def require_admin(f):
@@ -26,7 +23,7 @@ def require_admin(f):
         try:
             check_admin()
         except UnauthorizedError:
-            return error("You need admin"), 401
+            raise ApiError("You need admin", code=401)
         return f(*args, **kwargs)
     return wrapper
 
@@ -35,7 +32,7 @@ def require_json(f):
     def wrapper(*args, **kwargs):
         json = flask.request.json
         if json is None:
-            return error("You need json"), 400
+            raise ApiError("You need json")
         return f(*args, **kwargs, json=json)
     return wrapper
 
@@ -47,6 +44,23 @@ def jsonify_event(e):
         "arena": e.arena,
         "ts_sched": e.ts_sched
     }
+
+def commit():
+    try:
+        db.commit()
+    except IntegrityError as e:
+        raise ApiError(str(e))
+
+def parse_team(team, json):
+    team.name = json.get("name", team.name)
+    team.school = json.get("school", team.school)
+    team.is_shadow = bool(json.get("shadow", team.is_shadow))
+    return team
+
+def parse_judge(judge, json):
+    judge.name = json.get("name", judge.name)
+    judge.key = json.get("key", judge.key)
+    return judge
 
 admin_api = lambda f: json_view(require_json(require_admin(auto_key_error(f))))
 
@@ -61,7 +75,7 @@ def update_event(json):
             "ts_sched": int(ev["ts_sched"])
         }) for eid,ev in json.items())
     except (TypeError, ValueError):
-        return error("Invalid event data"), 400
+        raise ApiError("Invalid event data")
 
     query = db.query(model.Event)\
             .filter(model.Event.id.in_(event_data))\
@@ -120,10 +134,10 @@ def update_event(json):
         e.ts_sched = e_data["ts_sched"]
 
     try:
-        db.commit()
-    except IntegrityError:
+        commit()
+    except:
         request_logger.exception("Failed to commit event update")
-        return error("Invalid/conflicting event data"), 400
+        raise
 
     # Hae uudestaan yhdellä kyselyllä, muuten sqlalchemy hakee jokaisen erikseen
     return dict((e.id, jsonify_event(e)) for e in query.all())
@@ -140,15 +154,10 @@ def create_event(json):
             judgings=[model.EventJudging(judge_id=int(j)) for j in json["judges"]]
         )
     except (TypeError, ValueError):
-        return error("Invalid event data"), 400
+        raise ApiError("Invalid event data")
 
     db.add(event)
-
-    try:
-        db.commit()
-    except IntegrityError:
-        request_logger.exception("Failed to commit new event")
-        return error("Invalid/conflicting event data"), 400
+    commit()
 
     return jsonify_event(event)
 
@@ -158,9 +167,81 @@ def create_event(json):
 def delete_event(id):
     try:
         db.query(model.Event).filter_by(id=id).delete()
-        db.commit()
+        commit()
     except:
         request_logger.exception("Failed to delete event (id=%d)" % id)
-        return error("uwu something happened"), 400
+        raise
+
+    return {"status": "OK"}
+
+@default_api("/teams/<id>/update", methods=["POST"])
+@admin_api
+def update_team(id, json):
+    team = db.query(model.Team).filter_by(id=id).first()
+
+    if team is None:
+        raise ApiError("Team doesn't exist", code=404)
+
+    parse_team(team, json)
+    commit()
+
+    return {**jsonify(team), "shadow": bool(team.is_shadow)}
+
+@default_api("/teams/create", methods=["POST"])
+@admin_api
+def create_team(json):
+    team = parse_team(model.Team(), json)
+    db.add(team)
+    commit()
+    
+    return {**jsonify(team), "shadow": bool(team.is_shadow)}
+
+@default_api("/teams/<id>/delete", methods=["POST"])
+@json_view
+@require_admin
+def delete_team(id):
+    team = db.query(model.Team).filter_by(id=id).first()
+
+    if team is None:
+        raise ApiError("Team doesn't exist", code=404)
+
+    db.delete(team)
+    commit()
+
+    return {"status": "OK"}
+
+@default_api("/judges/<id>/update", methods=["POST"])
+@admin_api
+def update_judge(id, json):
+    judge = db.query(model.Judge).filter_by(id=id).first()
+
+    if judge is None:
+        raise ApiError("Judge doesn't exist", code=404)
+
+    parse_judge(judge, json)
+    commit()
+
+    return {**jsonify(judge), "key": judge.key}
+
+@default_api("/judges/create", methods=["POST"])
+@admin_api
+def create_judge(json):
+    judge = parse_judge(model.Judge(), json)
+    db.add(judge)
+    commit()
+
+    return {**jsonify(judge), "key": judge.key}
+
+@default_api("/judges/<id>/delete", methods=["POST"])
+@json_view
+@require_admin
+def delete_judge(id):
+    judge = db.query(model.Judge).filter_by(id=id).first()
+
+    if judge is None:
+        raise ApiError("Judge doesn't exist", code=404)
+
+    db.delete(judge)
+    commit()
 
     return {"status": "OK"}

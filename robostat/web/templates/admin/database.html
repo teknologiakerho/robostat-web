@@ -1,8 +1,37 @@
 {% extends "admin/base.html" %}
 
 {% block body %}
-	lol käytä <code>rsx</code>
+	<div class="a-sections">
+
+		<div class="a-section a-responsive">
+			<h4 class="a-section-header">
+				Joukkueet
+			</h4>
+
+			<div id="teams">
+			</div>
+
+		</div>
+
+		<div class="a-section a-responsive">
+			<h4 class="a-section-header">
+				Tuomarit
+			</h4>
+
+			<div id="judges">
+			</div>
+
+		</div>
+	</div>
 {% endblock %}
 
+{% block js %}
+	{{ super() }}
+	<script type="text/javascript">
+		{% set api_url = url_for(api) %}
+		admin.teamsEditor("#teams", { api: "{{api_url}}" });
+		admin.judgesEditor("#judges", { api: "{{api_url}}" });
+	</script>
+{% endblock %}
 
 {# vim: set ft=htmldjango: #}

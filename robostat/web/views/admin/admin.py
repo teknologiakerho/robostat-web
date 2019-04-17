@@ -40,7 +40,9 @@ class AdminView(flask.Blueprint):
         )
 
     def database(self):
-        return flask.render_template("admin/database.html")
+        return flask.render_template("admin/database.html",
+                api=self.api_endpoint("index")
+        )
 
     def timetables(self):
         return flask.render_template("admin/timetables.html")

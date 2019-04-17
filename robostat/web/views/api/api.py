@@ -1,5 +1,5 @@
-import flask
 import functools
+import flask
 from robostat.web.util import field_injector
 
 jsonifier = field_injector("__web_api_jsonifier__")
@@ -21,17 +21,27 @@ def json_view(f):
         return resp
     return ret
 
+class ApiError(Exception):
+
+    def __init__(self, mes, code=400):
+        super().__init__(mes)
+        self.code = code
+
 class ApiView(flask.Blueprint):
 
     _default_routes = []
 
     def __init__(self, name="api", import_name=__name__, **kwargs):
         super().__init__(name, import_name, **kwargs)
+        self.register_error_handler(ApiError, self.handle_api_error)
         self.add_url_rule("/", "index", self.index)
         self.record(self._register_defaults)
 
     def index(self):
         return ""
+
+    def handle_api_error(self, e):
+        return flask.jsonify(error=str(e)), e.code
 
     def _register_defaults(self, state):
         for r in self._default_routes:

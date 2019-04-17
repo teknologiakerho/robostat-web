@@ -2,6 +2,7 @@ $editor-row-hl-color: #81D4FA;
 $editor-row-hl-text-color: #fff;
 $editor-elem-hl-color: #2980b9;
 $editor-elem-hl-text-color: #fff;
+$edit-color: #2980b9;
 
 .a-editor-table {
 	width: 100%;
@@ -53,12 +54,37 @@ $editor-elem-hl-text-color: #fff;
 	color: $editor-row-hl-text-color !important;
 }
 
+.a-editor-db-row td {
+	padding: 4px;
+}
+
 .a-editor-time, .a-editor-arena {
 	width: 15%;
 }
 
 .a-editor-teams, .a-editor-judges {
 	width: 30%;
+}
+
+.a-editor-db-name, .a-editor-db-key {
+	width: 40%;
+}
+
+.a-editor-db-school {
+	width: 30%;
+}
+
+.a-editor-db-id, .a-editor-db-shadow {
+	width: 10%;
+}
+
+.a-editor-db-actions {
+	width: 10%;
+	white-space: nowrap;
+}
+
+.a-editor-db-key-missing {
+	color: $text-color-light;
 }
 
 .a-editor-multi-container {
@@ -105,10 +131,24 @@ $editor-elem-hl-text-color: #fff;
 	background: transparent;
 }
 
-.a-editor-cancel {
+.a-editor-cancel, .a-editor-delete {
 	color: $danger-color;
 	background: transparent;
-	margin-left: 20px;
+}
+
+.a-editor-edit {
+	color: $edit-color;
+	background: transparent;
+}
+
+.a-editor-action {
+	border: none;
+	padding: 0 14px;
+	cursor: pointer;
+}
+
+.a-editor-center {
+	text-align: center;
 }
 
 .a-editor-loading {
