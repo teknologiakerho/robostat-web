@@ -1,0 +1,50 @@
+.r-list-container {
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+	flex-wrap: wrap;
+	min-height: 100vh;
+}
+
+.r-list-ranking {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	flex: 1;
+
+	border: 1px solid $divider-color;
+	box-sizing: border-box;
+
+	font-size: 1.2em;
+	transition: 200ms all;
+	min-width: 100%;
+}
+
+.r-list-ranking, .r-list-ranking:visited {
+	color: $text-color;
+}
+
+.r-list-ranking:hover {
+	transform: scale(1.2);
+	background: $dark-background;
+	color: $dark-foreground;
+}
+
+@media(min-width: $small-screen) {
+	.r-list-ranking {
+		min-width: 50%;
+	}
+}
+
+@media(min-width: 2*$small-screen) {
+	.r-list-ranking {
+		min-width: 33.33333%;
+	}
+}
+
+@media(min-width: 3*$small-screen) {
+	.r-list-ranking {
+		min-width: 25%;
+	}
+}

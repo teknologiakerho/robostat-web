@@ -2,7 +2,7 @@ import flask
 from sqlalchemy.orm import joinedload, subqueryload
 import robostat.db as model
 from robostat.web.glob import db
-from robostat.web.util import get_block, field_injector, get_ranking
+from robostat.web.util import get_block, field_injector, get_ranking, is_hidden
 
 card_renderer = field_injector("__web_ranking_card_renderer__")
 details_renderer = field_injector("__web_ranking_details_renderer__")
@@ -47,7 +47,10 @@ class RankingView:
         return b
 
     def index(self):
-        return ""
+        tournament = flask.current_app.tournament
+        return flask.render_template("ranking/list.html",
+                rankings=[(id,r) for id,r in tournament.rankings.items() if not is_hidden(r)]
+        )
 
     def ranking(self, id):
         ranking = get_ranking(id)

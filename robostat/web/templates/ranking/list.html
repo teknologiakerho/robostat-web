@@ -1,0 +1,17 @@
+{% extends "ranking/base.html" %}
+
+{% macro render_card(id, ranking) %}
+	<a href="{{url_for('.ranking', id=id)}}" class="r-list-ranking">
+		{{ranking.name}}
+	</a>
+{% endmacro %}
+
+{% block body %}
+	<div class="r-list-container">
+		{% for id, ranking in rankings %}
+			{{ render_card(id, ranking) }}
+		{% endfor %}
+	</div>
+{% endblock %}
+
+{# vim: set ft=htmldjango: #}
