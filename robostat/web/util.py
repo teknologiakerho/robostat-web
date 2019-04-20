@@ -1,8 +1,9 @@
 import inspect
-import flask
+import quart
+from robostat.web.glob import tournament
 
 def get_block(event):
-    return event.get_block(tournament=flask.current_app.tournament)
+    return event.get_block(tournament=tournament)
 
 def decode_score(score):
     if not score.has_score:
@@ -20,12 +21,12 @@ def is_hidden(f):
 
 def get_ranking(id):
     try:
-        ret = flask.current_app.tournament.rankings[id]
+        ret = tournament.rankings[id]
     except KeyError:
-        flask.abort(404)
+        quart.abort(404)
 
     if is_hidden(ret):
-        flask.abort(404)
+        quart.abort(404)
 
     return ret
 

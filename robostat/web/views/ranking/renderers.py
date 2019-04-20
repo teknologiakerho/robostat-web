@@ -1,6 +1,6 @@
 import collections
 import itertools
-import flask
+import quart
 import random # testi
 from robostat.util import udict
 from robostat.tournament import OrderRank
@@ -9,27 +9,27 @@ from robostat.rulesets.rescue import RescueRank, RescueResult
 from robostat.web.views.ranking import card_renderer
 
 @card_renderer.of(OrderRank)
-def render_order_rank(rank, team, score):
-    return card_renderer[score.rank](rank, team, score.rank)
+async def render_order_rank(rank, team, score):
+    return await card_renderer[score.rank](rank, team, score.rank)
 
 @card_renderer.of(XSumoRank)
 @card_renderer.of(XSumoScoreRank)
-def render_xsumo_score_card(rank, team, score):
-    return flask.render_template("ranking/ranking-card-xsumo-score.html",
+async def render_xsumo_score_card(rank, team, score):
+    return await quart.render_template("ranking/ranking-card-xsumo-score.html",
             rank=rank,
             team=team,
             score=score
     )
 
 @card_renderer.of(XSumoWinsRank)
-def render_xsumo_wins_card(rank, team, score):
-    return flask.render_template("ranking/ranking-card-xsumo-wins.html",
+async def render_xsumo_wins_card(rank, team, score):
+    return await quart.render_template("ranking/ranking-card-xsumo-wins.html",
             rank=rank,
             team=team,
             score=score
     )
 
-def render_xsumo_matrix(events, **kwargs):
+async def render_xsumo_matrix(events, **kwargs):
     d = collections.defaultdict(udict)
 
     for e in events:
@@ -67,7 +67,7 @@ def render_xsumo_matrix(events, **kwargs):
     #        event_data[i][j] = { "event": None, "score1": s1, "score2": s2}
     #        event_data[j][i] = { "event": None, "score1": s2, "score2": s1}
 
-    return flask.render_template("ranking/details-xsumo-matrix.html",
+    return await quart.render_template("ranking/details-xsumo-matrix.html",
             team_data=team_data,
             event_data=event_data,
             **kwargs
@@ -92,8 +92,8 @@ def get_rescue_bar(score):
     return ret
 
 @card_renderer.of(RescueRank)
-def render_rescue_card(rank, team, score, max_time=None):
-    return flask.render_template("ranking/ranking-card-rescue.html",
+async def render_rescue_card(rank, team, score, max_time=None):
+    return await quart.render_template("ranking/ranking-card-rescue.html",
             rank=rank,
             team=team,
             score=score,
@@ -102,4 +102,6 @@ def render_rescue_card(rank, team, score, max_time=None):
     )
 
 def rescue_card_renderer(ruleset):
-    return lambda rank, team, score: render_rescue_card(rank, team, score, ruleset.max_time)
+    async def ret(rank, team, score):
+        return await render_rescue_card(rank, team, score, ruleset.max_time)
+    return ret

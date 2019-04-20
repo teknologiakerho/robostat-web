@@ -1,5 +1,5 @@
 import functools
-import flask
+import quart
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 import robostat.db as model
@@ -29,11 +29,11 @@ def require_admin(f):
 
 def require_json(f):
     @functools.wraps(f)
-    def wrapper(*args, **kwargs):
-        json = flask.request.json
+    async def wrapper(*args, **kwargs):
+        json = await quart.request.json
         if json is None:
             raise ApiError("You need json")
-        return f(*args, **kwargs, json=json)
+        return await f(*args, **kwargs, json=json)
     return wrapper
 
 def jsonify_event(e):
@@ -66,7 +66,7 @@ admin_api = lambda f: json_view(require_json(require_admin(auto_key_error(f))))
 
 @default_api("/events/update", methods=["POST"])
 @admin_api
-def update_event(json):
+async def update_event(json):
     try:
         event_data = dict((int(eid), {
             "teams": set(map(int, ev["teams"])),
@@ -144,7 +144,7 @@ def update_event(json):
 
 @default_api("/events/create", methods=["POST"])
 @admin_api
-def create_event(json):
+async def create_event(json):
     try:
         event = model.Event(
             arena=json["arena"],
@@ -164,7 +164,7 @@ def create_event(json):
 @default_api("/events/<id>/delete", methods=["POST"])
 @json_view
 @require_admin
-def delete_event(id):
+async def delete_event(id):
     try:
         db.query(model.Event).filter_by(id=id).delete()
         commit()
@@ -177,7 +177,7 @@ def delete_event(id):
 @default_api("/judgings/<event_id>/<judge_id>/reset", methods=["POST"])
 @json_view
 @require_admin
-def reset_judging(event_id, judge_id):
+async def reset_judging(event_id, judge_id):
     judging = db.query(model.EventJudging)\
             .filter_by(event_id=event_id, judge_id=judge_id)\
             .options(joinedload(model.EventJudging.scores, innerjoin=True))\
@@ -197,7 +197,7 @@ def reset_judging(event_id, judge_id):
 
 @default_api("/teams/<id>/update", methods=["POST"])
 @admin_api
-def update_team(id, json):
+async def update_team(id, json):
     team = db.query(model.Team).filter_by(id=id).first()
 
     if team is None:
@@ -210,7 +210,7 @@ def update_team(id, json):
 
 @default_api("/teams/create", methods=["POST"])
 @admin_api
-def create_team(json):
+async def create_team(json):
     team = parse_team(model.Team(), json)
     db.add(team)
     commit()
@@ -220,7 +220,7 @@ def create_team(json):
 @default_api("/teams/<id>/delete", methods=["POST"])
 @json_view
 @require_admin
-def delete_team(id):
+async def delete_team(id):
     team = db.query(model.Team).filter_by(id=id).first()
 
     if team is None:
@@ -233,7 +233,7 @@ def delete_team(id):
 
 @default_api("/judges/<id>/update", methods=["POST"])
 @admin_api
-def update_judge(id, json):
+async def update_judge(id, json):
     judge = db.query(model.Judge).filter_by(id=id).first()
 
     if judge is None:
@@ -246,7 +246,7 @@ def update_judge(id, json):
 
 @default_api("/judges/create", methods=["POST"])
 @admin_api
-def create_judge(json):
+async def create_judge(json):
     judge = parse_judge(model.Judge(), json)
     db.add(judge)
     commit()
@@ -256,7 +256,7 @@ def create_judge(json):
 @default_api("/judges/<id>/delete", methods=["POST"])
 @json_view
 @require_admin
-def delete_judge(id):
+async def delete_judge(id):
     judge = db.query(model.Judge).filter_by(id=id).first()
 
     if judge is None:

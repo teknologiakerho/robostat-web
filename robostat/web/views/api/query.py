@@ -1,4 +1,4 @@
-import flask
+import quart
 import sqlalchemy as sa
 from sqlalchemy.orm import selectinload, joinedload
 import robostat.db as model
@@ -40,10 +40,11 @@ def filter_events(query, params):
 
 @default_api("/teams")
 @json_view
-def teams():
+async def teams():
+    values = await quart.request.values
     query = db.query(model.Team)
 
-    if "include_shadows" in flask.request.values:
+    if "include_shadows" in values:
         return [{
             **jsonify(t),
             "shadow": bool(t.is_shadow)
@@ -54,10 +55,11 @@ def teams():
 
 @default_api("/judges")
 @json_view
-def judges():
+async def judges():
+    values = await quart.request.values
     judges = db.query(model.Judge).all()
 
-    if "with_keys" in flask.request.values:
+    if "with_keys" in values:
         check_admin()
         return [{
             **jsonify(j),
@@ -68,7 +70,7 @@ def judges():
 
 @default_api("/ranking/<id>")
 @json_view
-def ranking(id):
+async def ranking(id):
     ranking = get_ranking(id)
     ranking = ranking(db)
 
@@ -80,7 +82,7 @@ def ranking(id):
 
 @default_api("/events")
 @json_view
-def events():
+async def events():
     query = db.query(model.Event)\
             .options(
                 selectinload(model.Event.teams_part)\
@@ -88,13 +90,11 @@ def events():
                 selectinload(model.Event.judgings)\
                 .joinedload(model.EventJudging.judge, innerjoin=True)
             )
+    values = await quart.request.values
+    query = filter_events(query, values)
 
-    params = flask.request.values
-
-    query = filter_events(query, params)
-
-    if "limit" in params:
-        query = query.limit(params.get("limit", type=int))
+    if "limit" in values:
+        query = query.limit(values.get("limit", type=int))
 
     ret = query.all()
 
@@ -112,13 +112,14 @@ def events():
 
 @default_api("/scores")
 @json_view
-def scores():
+async def scores():
     query = db.query(model.Event)\
             .options(
                 joinedload(model.Event.scores, innerjoin=True)
             )
 
-    query = filter_events(query, flask.request.values)
+    values = await quart.request.values
+    query = filter_events(query, values)
     ret = query.all()
 
     return dict((e.id, [

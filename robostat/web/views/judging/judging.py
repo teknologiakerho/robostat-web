@@ -2,7 +2,7 @@ import time
 import functools
 import logging
 import base64
-import flask
+import quart
 from sqlalchemy.orm import joinedload, subqueryload, contains_eager
 import robostat.db as model
 from robostat.ruleset import Ruleset, ValidationError
@@ -17,8 +17,8 @@ scoring_renderer = field_injector("__web_scoring_renderer__")
 post_parser = field_injector("__web_scoring_post_parser__")
 
 @card_renderer.of(Ruleset)
-def render_generic_card(judging):
-    return flask.render_template("judging/event-card-generic.html", judging=judging)
+async def render_generic_card(judging):
+    return await quart.render_template("judging/event-card-generic.html", judging=judging)
 
 class ScoreParserError(Exception):
     pass
@@ -34,11 +34,11 @@ def autofail_key_error(f):
 
 def check_json(f):
     @functools.wraps(f)
-    def ret(*args, **kwargs):
-        json = flask.request.json
+    async def ret(*args, **kwargs):
+        json = await quart.request.json
         if json is None:
             raise ScoreParserError("Invalid/missing json")
-        return f(*args, **kwargs, json=json)
+        return await f(*args, **kwargs, json=json)
     return ret
 
 class JudgingView:
@@ -46,7 +46,7 @@ class JudgingView:
     hide_shadows = True
 
     def create_blueprint(self, name="judging", import_name=__name__, **kwargs):
-        b = flask.Blueprint(name, import_name, **kwargs)
+        b = quart.Blueprint(name, import_name, **kwargs)
         b.before_request(self.set_user_id)
         b.context_processor(self.template_context)
         b.add_url_rule("/", "index", self.index)
@@ -56,51 +56,51 @@ class JudgingView:
         b.add_url_rule("/scoring/<int:id>", "scoring", self.scoring, methods=("GET", "POST"))
         return b
 
-    def index(self):
-        return flask.redirect(flask.url_for(".list", what="future"))
+    async def index(self):
+        return quart.redirect(quart.url_for(".list", what="future"))
 
-    def list(self, what):
+    async def list(self, what):
         judgings = self.get_judging_list(self.judging_user.id, what)
-        return self.render_judging_list(judgings)
+        return await self.render_judging_list(judgings)
 
-    def scoring(self, id):
-        judging = self.get_judging(self.judging_user.id, id) or flask.abort(404)
+    async def scoring(self, id):
+        judging = self.get_judging(self.judging_user.id, id) or quart.abort(404)
 
-        if flask.request.method == "POST":
+        if quart.request.method == "POST":
             try:
-                return self.save_score_post(judging)
+                return await self.save_score_post(judging)
             except:
                 request_logger.exception("Uncaught exception while saving scores")
-                request_logger.log_post_body(logging.ERROR)
+                await request_logger.log_post_body(logging.ERROR)
                 raise
 
-        return self.render_scoring_form(judging)
+        return await self.render_scoring_form(judging)
 
-    def set_user_id(self):
-        if user.is_admin and "as" in flask.request.values:
-            flask.g.judging_user = db.query(model.Judge)\
-                    .filter_by(id=flask.request.values.get("as", type=int))\
-                    .first() or flask.abort(400)
-            flask.g.judging_is_real_user = False
+    async def set_user_id(self):
+        values = await quart.request.values
+
+        if user.is_admin and "as" in quart.request.values:
+            quart.g.judging_user = self.get_faked_user(values.get("as", type=int))\
+                    or quart.abort(400)
+            quart.g.judging_is_real_user = False
         elif user.logged_in:
-            flask.g.judging_user = user
-            flask.g.judging_is_real_user = True
+            quart.g.judging_user = user
+            quart.g.judging_is_real_user = True
         else:
             raise UnauthorizedError()
 
     @property
     def judging_user(self):
-        return flask.g.judging_user
-
-    @property
-    def is_real_user(self):
-        return flask.g.judging_is_real_user
+        return quart.g.judging_user
 
     def template_context(self):
         return {
             "judging_user": self.judging_user,
-            "is_real_user": self.is_real_user
+            "is_real_user": quart.g.judging_is_real_user
         }
+
+    def get_faked_user(self, id):
+        return db.query(model.Judge).filter_by(id=id).first()
 
     def get_judging_list(self, judge_id, what):
         query = db.query(model.EventJudging)\
@@ -136,13 +136,13 @@ class JudgingView:
                         .joinedload(model.EventTeam.team, innerjoin=True)
                 ).first()
 
-    def render_judging_list(self, judgings):
-        return flask.render_template("judging/list.html",
+    async def render_judging_list(self, judgings):
+        return await quart.render_template("judging/list.html",
                 judgings=judgings,
                 render_event_card=self.render_event_card
         )
 
-    def render_event_card(self, judging):
+    async def render_event_card(self, judging):
         ruleset = get_block(judging.event).ruleset
 
         try:
@@ -150,22 +150,22 @@ class JudgingView:
         except AttributeError:
             return ""
 
-        return renderer(judging)
+        return await renderer(judging)
 
-    def render_scoring_form(self, judging):
+    async def render_scoring_form(self, judging):
         ruleset = get_block(judging.event).ruleset
-        return scoring_renderer[ruleset](judging)
+        return await scoring_renderer[ruleset](judging)
 
-    def parse_scoring_post(self, judging):
+    async def parse_scoring_post(self, judging):
         ruleset = get_block(judging.event).ruleset
-        return post_parser[ruleset](judging)
+        return await post_parser[ruleset](judging)
 
-    def save_score_post(self, judging):
+    async def save_score_post(self, judging):
         try:
-            scores = self.parse_scoring_post(judging)
+            scores = await self.parse_scoring_post(judging)
         except ScoreParserError as e:
             request_logger.warning("Failed to parse score post: %s" % str(e))
-            request_logger.log_post_body(logging.WARNING)
+            await request_logger.log_post_body(logging.WARNING)
             return str(e), 400
 
         ruleset = get_block(judging.event).ruleset
@@ -174,7 +174,7 @@ class JudgingView:
             ruleset.validate(*(s for _,s in scores))
         except ValidationError as e:
             request_logger.warning("Failed to validate scores: %s" % str(e))
-            request_logger.log_post_body(logging.WARNING)
+            await request_logger.log_post_body(logging.WARNING)
             return str(e), 400
 
         if set(s.team_id for s in judging.scores) != set(s[0] for s in scores):
@@ -182,7 +182,7 @@ class JudgingView:
                 ",".join(str(s[0]) for s in scores),
                 ",".join(str(s.team_id) for s in judging.scores)
             ))
-            request_logger.log_post_body(logging.WARNING)
+            await request_logger.log_post_body(logging.WARNING)
             return "Invalid team list", 400
 
         # Jos tästä tulee joku sqlalchemy virhe vielä nyt vielä validoinnin
@@ -201,12 +201,12 @@ class JudgingView:
         for si in score_info:
             request_logger.info("Team (id): %d | Score: %s | Base64: %s" % si)
 
-        request_logger.log_post_body(logging.DEBUG)
+        await request_logger.log_post_body(logging.DEBUG)
 
-        flask.flash(
-                flask.render_template("judging/score-saved-message.html", score_info=score_info),
-                "success"
+        saved_mes = await quart.render_template("judging/score-saved-message.html",
+                score_info=score_info
         )
+        await quart.flash(saved_mes, "success")
 
         return "OK: %s" % str(score_info)
 

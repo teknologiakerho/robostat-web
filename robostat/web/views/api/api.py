@@ -1,5 +1,5 @@
 import functools
-import flask
+import quart
 from robostat.web.util import field_injector
 
 jsonifier = field_injector("__web_api_jsonifier__")
@@ -9,14 +9,14 @@ def jsonify(x):
 
 def json_view(f):
     @functools.wraps(f)
-    def ret(*args, **kwargs):
-        ret = f(*args, **kwargs)
+    async def ret(*args, **kwargs):
+        ret = await f(*args, **kwargs)
 
         if isinstance(ret, tuple):
-            resp = flask.jsonify(ret[0])
+            resp = quart.jsonify(ret[0])
             resp.status_code = ret[1]
         else:
-            resp = flask.jsonify(ret)
+            resp = quart.jsonify(ret)
 
         return resp
     return ret
@@ -32,17 +32,17 @@ class ApiView:
     _default_routes = []
 
     def create_blueprint(self, name="api", import_name=__name__, **kwargs):
-        b = flask.Blueprint(name, import_name, **kwargs)
+        b = quart.Blueprint(name, import_name, **kwargs)
         b.register_error_handler(ApiError, self.handle_api_error)
         b.add_url_rule("/", "index", self.index)
         b.record(self._register_defaults)
         return b
 
-    def index(self):
+    async def index(self):
         return ""
 
     def handle_api_error(self, e):
-        return flask.jsonify(error=str(e)), e.code
+        return quart.jsonify(error=str(e)), e.code
 
     def _register_defaults(self, state):
         for r in self._default_routes:

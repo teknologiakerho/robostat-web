@@ -1,4 +1,4 @@
-import flask
+import quart
 import robostat.db as model
 from robostat.web.glob import db
 from robostat.web.login import user
@@ -9,7 +9,7 @@ class LoginView:
         self.admin_password = admin_password
 
     def create_blueprint(self, name="login", import_name=__name__, **kwargs):
-        b = flask.Blueprint(name, import_name, **kwargs)
+        b = quart.Blueprint(name, import_name, **kwargs)
 
         b.add_url_rule("/judge", "judge", self.login, methods=["GET", "POST"])
         b.add_url_rule("/logout", "logout", self.logout, methods=["GET", "POST"])
@@ -20,45 +20,51 @@ class LoginView:
 
         return b
 
-    def login(self):
-        if flask.request.method == "POST":
+    async def login(self):
+        if quart.request.method == "POST":
             try:
-                key = flask.request.form["key"]
+                key = await self.get_key()
             except KeyError:
-                return flask.render_template("login/judge.html", error="Puuttuva avain")
+                return await quart.render_template("login/judge.html", error="Puuttuva avain")
 
             u = db.query(model.Judge).filter_by(key=key).first()
             if u is None:
-                return flask.render_template("login/judge.html", error="Tuomaria ei löytynyt")
+                return await quart.render_template("login/judge.html",
+                        error="Tuomaria ei löytynyt"
+                )
 
             user.login(u.id, u.name)
-            flask.flash("Olet nyt tuomari: %s" % u.name, "success")
-            return flask.redirect(flask.request.args.get("return_to", "/"))
+            await quart.flash("Olet nyt tuomari: %s" % u.name, "success")
+            return quart.redirect(quart.request.args.get("return_to", "/"))
 
-        return flask.render_template("login/judge.html")
+        return await quart.render_template("login/judge.html")
 
-    def admin(self):
-        if flask.request.method == "POST":
+    async def admin(self):
+        if quart.request.method == "POST":
             try:
-                key = flask.request.form["key"]
+                key = await self.get_key()
             except KeyError:
-                return flask.render_template("login/admin.html", error="Puuttuva salasana")
+                return await quart.render_template("login/admin.html", error="Puuttuva salasana")
 
             if key == self.admin_password:
                 user.auth_admin()
-                flask.flash("Olet nyt ylläpitäjä", "success")
-                return flask.redirect(flask.request.args.get("return_to", "/"))
+                await quart.flash("Olet nyt ylläpitäjä", "success")
+                return quart.redirect(quart.request.args.get("return_to", "/"))
 
-            return flask.render_template("login/admin.html", error="Väärä salasana")
+            return await quart.render_template("login/admin.html", error="Väärä salasana")
 
-        return flask.render_template("login/admin.html")
+        return await quart.render_template("login/admin.html")
 
-    def logout(self):
+    async def logout(self):
         if user.logged_in:
             user.logout()
-        return flask.redirect("/")
+        return quart.redirect("/")
 
-    def unadmin(self):
+    async def unadmin(self):
         if user.is_admin:
             user.deauth_admin()
-        return flask.redirect("/")
+        return quart.redirect("/")
+
+    async def get_key(self):
+        form = await quart.request.form
+        return form["key"]

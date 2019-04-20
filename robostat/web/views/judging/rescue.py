@@ -1,4 +1,4 @@
-import flask
+import quart
 from robostat.rulesets.rescue import RescueRuleset, RescueResult, WEIGHTS, RescueObstacleCategory,\
         RescueMultiObstacleCategory, RescueMultiObstacleScore
 from robostat.web.util import get_block, field_injector
@@ -52,14 +52,14 @@ def get_event_data(judging):
     return ret
 
 @card_renderer.of(RescueRuleset)
-def render_card(judging):
-    return flask.render_template("judging/event-card-rescue.html", judging=judging)
+async def render_card(judging):
+    return await quart.render_template("judging/event-card-rescue.html", judging=judging)
 
 @scoring_renderer.of(RescueRuleset)
-def render_scoring(judging):
+async def render_scoring(judging):
     ruleset = get_block(judging.event).ruleset
 
-    return flask.render_template("judging/scoring-rescue-%s.html" % str(ruleset.difficulty),
+    return await quart.render_template("judging/scoring-rescue-%s.html" % str(ruleset.difficulty),
             judging=judging,
             weights=WEIGHTS,
             event_data=get_event_data(judging)
@@ -68,7 +68,7 @@ def render_scoring(judging):
 @post_parser.of(RescueRuleset)
 @autofail_key_error
 @check_json
-def parse_post(judging, json):
+async def parse_post(judging, json):
     ruleset = get_block(judging.event).ruleset
     scores = json["scores"]
 

@@ -1,9 +1,10 @@
-import flask
-from werkzeug.local import LocalProxy
+import quart
+from quart.local import LocalProxy
 
-db = LocalProxy(lambda: flask.current_app.db)
+db = LocalProxy(lambda: quart.current_app.db)
+tournament = LocalProxy(lambda: quart.current_app.tournament)
 
-res = flask.Blueprint("robostat", __name__,
+res = quart.Blueprint("robostat", __name__,
         static_folder="static",
         static_url_path="/static/robostat",
         template_folder="templates"

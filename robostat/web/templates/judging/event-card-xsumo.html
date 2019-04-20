@@ -1,3 +1,5 @@
+{% set scores = judging.scores|sort(attribute="team.name") %}
+
 {% extends "judging/event-card.html" %}
 
 {% block classes %}
@@ -6,13 +8,10 @@
 {% endblock %}
 
 {% block title %}
-	{% set names = judging.event.teams|map(attribute="name")|sort %}
-	{{names[0]}} vs. {{names[1]}}
+	{{scores[0].team.name}} vs. {{scores[1].team.name}}
 {% endblock %}
 
 {% block score %}
-	{% set scores = judging.scores|sort(attribute="team.name") %}
-
 	Tuomaroitu
 	<strong>{{scores[0].score_obj|int}}</strong>
 	-

@@ -1,5 +1,5 @@
 import functools
-import flask
+import quart
 
 class SessionProperty:
 
@@ -8,15 +8,15 @@ class SessionProperty:
 
     def __get__(self, obj, cls):
         try:
-            return flask.session[self.name]
+            return quart.session[self.name]
         except KeyError:
             return None
 
     def __set__(self, obj, value):
-        flask.session[self.name] = value
+        quart.session[self.name] = value
 
     def __delete__(self, obj):
-        flask.session.pop(self.name)
+        quart.session.pop(self.name)
 
 class UserSessionProxy:
 

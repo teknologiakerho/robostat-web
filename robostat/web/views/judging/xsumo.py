@@ -1,4 +1,4 @@
-import flask
+import quart
 from robostat.rulesets.xsumo import XSumoRuleset, XSumoResult, XSRuleset, XSRoundScore,\
         calc_results
 from robostat.web.util import get_block
@@ -27,12 +27,12 @@ def get_event_data_xs(judging):
     return ret
 
 @card_renderer.of(XSumoRuleset)
-def render_card(judging):
-    return flask.render_template("judging/event-card-xsumo.html", judging=judging)
+async def render_card(judging):
+    return await quart.render_template("judging/event-card-xsumo.html", judging=judging)
 
 @scoring_renderer.of(XSRuleset)
-def render_scoring_xs(judging):
-    return flask.render_template("judging/scoring-xsumo-basic.html",
+async def render_scoring_xs(judging):
+    return await quart.render_template("judging/scoring-xsumo-basic.html",
             judging=judging,
             event_data=get_event_data_xs(judging)
     )
@@ -40,7 +40,7 @@ def render_scoring_xs(judging):
 @post_parser.of(XSRuleset)
 @autofail_key_error
 @check_json
-def parse_post_xs(judging, json):
+async def parse_post_xs(judging, json):
     try:
         tid1 = int(json["team1"])
         tid2 = int(json["team2"])
