@@ -24,8 +24,13 @@ class RobostatWeb(flask.Flask):
                 url_prefix=prefix
         )
 
-    def setup_db(self, url, engine_args={},
+    def setup_db(self, path=None, engine_args={},
             session_args={"autocommit": False, "autoflush": False}):
+
+        if path is None:
+            url = "sqlite://"
+        else:
+            url = "sqlite:///%s" % path
 
         logger.debug("Connecting db: %s %s" % (url, str(engine_args)))
         engine = sa.create_engine(url, **engine_args)
@@ -45,7 +50,7 @@ class RobostatWeb(flask.Flask):
 def create_app(config_pyfile=None, config_envvar="ROBOSTAT_CONFIG",
         admin_password=None, tournament=None,
         init_file=None, init_envvar="ROBOSTAT_INIT",
-        db_url=None, db_envvar="ROBOSTAT_DB",
+        db_path=None, db_envvar="ROBOSTAT_DB",
         import_name=__name__):
 
     import os
@@ -75,12 +80,12 @@ def create_app(config_pyfile=None, config_envvar="ROBOSTAT_CONFIG",
 
     app.setup_login(admin_password)
 
-    db_url = db_url or os.environ.get(db_envvar, None) or app.config.get("ROBOSTAT_DB", None)
+    db_path = db_path or os.environ.get(db_envvar, None) or app.config.get("ROBOSTAT_DB", None)
 
-    if db_url is None:
+    if db_path is None:
         raise ValueError("No database url given")
 
-    app.setup_db(db_url)
+    app.setup_db(db_path)
 
     if "ROBOSTAT_LOGFILE" in app.config:
         import logging
