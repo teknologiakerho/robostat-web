@@ -1,7 +1,13 @@
 import robostat.db as model
+from robostat.tournament import RankProxy
 from robostat.rulesets.xsumo import XSumoRank
 from robostat.rulesets.rescue import RescueRank, RescueScore
 from robostat.web.views.api import jsonifier
+
+@jsonifier.of(RankProxy)
+def jsonify_rank_proxy(proxy):
+    # TODO: tässä vois palauttaa tietoa myös mitä muuta tuossa proxyssä on?
+    return jsonifier[proxy.rank](proxy.rank)
 
 @jsonifier.of(XSumoRank)
 def jsonify_xsumo_rank(rank):
