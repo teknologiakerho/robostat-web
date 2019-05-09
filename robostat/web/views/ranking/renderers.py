@@ -98,7 +98,7 @@ def render_rescue_card(rank, team, score, max_time=None):
             team=team,
             score=score,
             max_time=max_time,
-            bar_data=get_rescue_bar(score.best)
+            bar_data=None if score.best is None else get_rescue_bar(score.best)
     )
 
 def rescue_card_renderer(ruleset):

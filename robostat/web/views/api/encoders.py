@@ -22,7 +22,7 @@ def jsonify_xsumo_rank(rank):
 @jsonifier.of(RescueRank)
 def jsonify_rescue_rank(rank):
     return {
-        "best": jsonifier[rank.best](rank.best),
+        "best": None if rank.best is None else jsonifier[rank.best](rank.best),
         "others": [(jsonifier[s](s) if s is not None else None) for s in rank.other_scores]
     }
 
