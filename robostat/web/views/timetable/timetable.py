@@ -43,6 +43,9 @@ def query_events(**kwargs):
     if "block_ids" in kwargs:
         query = query.filter(model.Event.block_id.in_(kwargs["block_ids"]))
 
+    if "arenas" in kwargs:
+        query = query.filter(model.Event.arena.in_(kwargs["arenas"]))
+
     if "team_names" in kwargs:
         #query = query.filter(model.Team.name.in_(kwargs["team_names"]))
         query = query.join(model.Event.teams_part)\
@@ -103,6 +106,9 @@ class TimetableView:
         
         if "b" in flask.request.values:
             flt["block_ids"] = flask.request.values.getlist("b")
+
+        if "a" in flask.request.values:
+            flt["arenas"] = flask.request.values.getlist("a")
 
         if "t" in flask.request.values:
             flt["team_names"] = flask.request.values.getlist("t")

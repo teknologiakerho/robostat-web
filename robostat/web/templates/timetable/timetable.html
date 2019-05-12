@@ -49,6 +49,17 @@
 						</li>
 					{% endif %}
 
+					{% if event_filter.arenas %}
+						<li>
+							Vain seuraavat kentät näytetään:
+							<ul class="t-filter-item-list">
+								{% for a in event_filter.arenas %}
+									<li>{{a}}</li>
+								{% endfor %}
+							</ul>
+						</li>
+					{% endif %}
+
 					<li>
 						<a class="t-filter-remove" href="{{url_for('.index')}}">
 							[Poista hakuehdot]
