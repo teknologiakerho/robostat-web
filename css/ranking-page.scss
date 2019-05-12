@@ -26,9 +26,9 @@
 }
 
 .r-page-content {
-	//border-width: 0 1px;
-	//border-style: solid;
-	//border-color: darken($divider-color, 10%);
+	display: flex;
+	flex-direction: column;
+
 	padding: 0 10px;
 	flex: 1;
 }
