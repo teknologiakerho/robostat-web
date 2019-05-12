@@ -2,6 +2,7 @@
 
 {% block css %}
 	{{ super() }}
+	{{ fontawesome() }}
 	{{ static_css("lib/selectize.min.css") }}
 	{{ static_css("timetable.min.css") }}
 {% endblock %}
@@ -94,6 +95,7 @@
 
 			{% block submit %}
 				<button class="action-button primary-button t-submit">
+					<i class="fas fa-search"></i>
 					Hae aikataulu
 				</button>
 			{% endblock %}
