@@ -1,18 +1,22 @@
-{% from "util.html" import render_team_card %}
+<div class="r-rank-card">
 
-<div class="uk-flex-middle" uk-grid>
-	<div class="uk-width-1-6">
+	<div class="r-rank-card-rank">
+		--
 	</div>
-	<div class="uk-width-expand">
-		{% block team %}
-			{{render_team_card(team)}}
-		{% endblock %}
+
+	<div class="r-rank-card-team-info">
+		<div class="r-rank-card-name">
+			{{team.name}}
+		</div>
+		<div class="r-rank-card-school">
+			{{team.school}}
+		</div>
 	</div>
-	{% block right %}
-		<span class="uk-text-muted">
-			(Ei vielä sijoitusta)
-		</span>
-	{% endblock %}
+
+	<div class="text-meta">
+		(Ei vielä sijoitusta)
+	</div>
+
 </div>
 
 {# vim: set ft=htmldjango: #}
