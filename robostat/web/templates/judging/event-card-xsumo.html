@@ -6,12 +6,11 @@
 {% endblock %}
 
 {% block title %}
-	{% set names = judging.event.teams|map(attribute="name")|sort %}
-	{{names[0]}} vs. {{names[1]}}
+	{{judging.event.teams_sorted|map(attribute="name")|join(" vs. ")}}
 {% endblock %}
 
 {% block score %}
-	{% set scores = judging.scores|sort(attribute="team.name") %}
+	{% set scores = judging.scores|sort(attribute="team.name", case_sensitive=True) %}
 
 	Tuomaroitu
 	<strong>{{scores[0].score_obj|int}}</strong>
